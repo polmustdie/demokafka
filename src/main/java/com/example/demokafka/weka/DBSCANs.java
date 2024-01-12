@@ -16,8 +16,10 @@ import java.util.List;
 public class DBSCANs extends Algo<SBSNode>{
 	// Epsilon in DBSCAN>??????????????????
 	public static final double EPS = 0.2;
+	public static  double eps_test;
 
 	public static final int MIN_POINTS = 5;
+	public static int min_points_test;
 	
 	private static List<SBSNode> nodeset = new ArrayList<>();
 
@@ -29,8 +31,11 @@ public class DBSCANs extends Algo<SBSNode>{
 		return nodeset;
 	}
 
-	public DBSCANs(String path){
+	public DBSCANs(String path, ArrayList<Object> constants){
 		super(path, true);
+		eps_test = Double.parseDouble(constants.get(0).toString());
+		min_points_test = Integer.parseInt(constants.get(1).toString());
+
 		nodeset.clear();
 //		dataset.deleteAttributeAt(dataset.numAttributes()-1); //DBSCAN is a unsuperviesd method.
 		for(int i=0; i<dataset.numInstances(); i++){
@@ -81,8 +86,8 @@ public class DBSCANs extends Algo<SBSNode>{
 	// probability of each node
 	private void clusteringByDBSCAN() throws Exception{
 		DBSCAN dbscan = new DBSCAN();
-		dbscan.setEpsilon(EPS);
-		dbscan.setMinPoints(MIN_POINTS);
+		dbscan.setEpsilon(eps_test);
+		dbscan.setMinPoints(min_points_test);
 		
 		dbscan.buildClusterer(dataset);
 		ClusterEvaluation eval = new ClusterEvaluation();

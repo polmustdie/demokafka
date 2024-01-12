@@ -32,7 +32,7 @@ public class HILNode extends WekaNode {
 
 
     public void setNeighbor(HILNode node) {
-        if (KNeighbors.size() < HilOut.K)
+        if (KNeighbors.size() < HilOut.k_test)
             KNeighbors.add(node);
     }
 

@@ -10,10 +10,11 @@ import java.util.ArrayList;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Component
 public class BatchInfoAndData {
-    private int mode;
+    private ArrayList<Object> constants;
+//    private int mode;
     private ArrayList<BatchGeoData> data;
 
-    public int getMode() {
-        return mode;
-    }
+//    public int getMode() {
+//        return mode;
+//    }
 }

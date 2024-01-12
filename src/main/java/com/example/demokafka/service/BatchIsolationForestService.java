@@ -1,6 +1,7 @@
 package com.example.demokafka.service;
 
 import com.example.demokafka.model.BatchGeoData;
+import com.example.demokafka.model.BatchInfoAndData;
 import com.example.demokafka.weka.DBSCANs;
 import com.example.demokafka.weka.IsolationForests;
 import com.example.demokafka.weka.utils.CsvArffConverter;
@@ -19,9 +20,10 @@ import java.util.List;
 public class BatchIsolationForestService {
     @Autowired
     JsonToArffService jsonToArffService;
-    public List<BatchGeoData> analyze(BatchGeoData[] batchGeoData) throws Exception {
-        String path = jsonToArffService.convert(batchGeoData);
-        IsolationForests gb = new IsolationForests(path);
+    public List<BatchGeoData> analyze(BatchInfoAndData batch) throws Exception {
+        ArrayList<Object> constants = batch.getConstants();
+        String path = jsonToArffService.convert(batch.getData());
+        IsolationForests gb = new IsolationForests(path, constants);
 
         gb.showResults(gb.getNodeset());
         return gb.getNodes();

@@ -1,6 +1,7 @@
 package com.example.demokafka.service;
 
 import com.example.demokafka.model.BatchGeoData;
+import com.example.demokafka.model.BatchInfoAndData;
 import com.example.demokafka.weka.LocalOutlierFactor;
 import com.example.demokafka.weka.utils.CsvArffConverter;
 import com.example.demokafka.weka.utils.JsonToCsv;
@@ -19,9 +20,19 @@ import java.util.List;
 public class BatchLOFService {
     @Autowired
     JsonToArffService jsonToArffService;
-    public List<BatchGeoData> analyze(BatchGeoData[] batchGeoData) throws Exception {
-        String path = jsonToArffService.convert(batchGeoData);
-        LocalOutlierFactor gb = new LocalOutlierFactor(path);
+    public List<BatchGeoData> analyze(BatchInfoAndData batch) throws Exception {
+//        final String json = "{\"contentType\": \"foo\", \"fooField1\": ... }";
+//        final JsonNode node = new ObjectMapper().readTree(json);
+////                    ^^^^^^^^^^^^^^^^^^
+//// n.b.: try and *reuse* a single instance of ObjectMapper in production
+//
+//        if (node.has("contentType")) {
+//            System.out.println("contentType: " + node.get("contentType"));
+//        }
+        ArrayList<Object> constants = batch.getConstants();
+
+        String path = jsonToArffService.convert(batch.getData());
+        LocalOutlierFactor gb = new LocalOutlierFactor(path, constants);
 
 
 

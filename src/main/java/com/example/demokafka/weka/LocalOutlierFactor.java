@@ -17,6 +17,7 @@ import weka.filters.unsupervised.attribute.LOF;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /*
  1. Get k-distance of each instance.
@@ -30,13 +31,15 @@ public class LocalOutlierFactor extends Algo<LOFNode>{
 	ArrayList<LOFNode> values = new ArrayList<>();
 	// n outliers
 	public static final double N = 0.15;
+	public static double n_test;
 	// lower bound used to be 20
 	public static final String LOWER_BOUND = "5";
-
+	public static String lower_bound_test;
 
 
 	// upper bound used to be 30
 	public static final String UPPER_BOUND = "10";
+	public static String upper_bound_test;
 
 	private static List<LOFNode> nodeset = new ArrayList<>();
 	public List<LOFNode> getNodeset() {
@@ -59,9 +62,13 @@ public class LocalOutlierFactor extends Algo<LOFNode>{
 //		return nodes;
 //	}
 	
-	public LocalOutlierFactor(String path){
+	public LocalOutlierFactor(String path, ArrayList<Object> constants){
+
 		super(path);
 		nodeset.clear();
+		n_test = Double.parseDouble(constants.get(0).toString());
+		lower_bound_test = constants.get(1).toString();
+		upper_bound_test = constants.get(2).toString();
 //
 //		ARFFReader reader = new ARFFReader(path);
 //		dataset = reader.getDataset();
@@ -87,9 +94,9 @@ public class LocalOutlierFactor extends Algo<LOFNode>{
 	private void calculateLOF() throws Exception{
 
 		LOF lof = new LOF();
-		lof.setMinPointsLowerBound(LOWER_BOUND);
+		lof.setMinPointsLowerBound(lower_bound_test);
 //		lof.setMinPointsUpperBound(String.valueOf(nodeset.size() - 2));
-		lof.setMinPointsUpperBound(UPPER_BOUND);
+		lof.setMinPointsUpperBound(upper_bound_test);
 //		lof.setNNSearch();
 		LinearNNSearch searcher = new LinearNNSearch();
 //		searcher.setDistanceFunction(new ManhattanDistance());
@@ -107,7 +114,7 @@ public class LocalOutlierFactor extends Algo<LOFNode>{
 	
 	private void rankingByLOF(){
 		Collections.sort(nodeset, new LOFComparator());
-		int topNum = (int)(N * nodeset.size());
+		int topNum = (int)(n_test * nodeset.size());
 		
 		for(int i=0; i<topNum; i++){
 			nodeset.get(i).setPrelabel("outlier");

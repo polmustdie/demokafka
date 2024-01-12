@@ -1,6 +1,7 @@
 package com.example.demokafka.controller;
 
 import com.example.demokafka.model.BatchGeoData;
+import com.example.demokafka.model.BatchInfoAndData;
 import com.example.demokafka.service.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -27,25 +28,25 @@ public class BatchController {
     BatchLOFService batchLOFService;
 
     @PostMapping("/HilOut")
-    public List<BatchGeoData> analyzeHilOut(@RequestBody BatchGeoData[] batch) throws Exception {
+    public List<BatchGeoData> analyzeHilOut(@RequestBody BatchInfoAndData batch) throws Exception {
         return batchHilOutService.analyze(batch);
     }
 
     @PostMapping("/DBSCAN")
-    public List<BatchGeoData> analyzeDBSCAN(@RequestBody BatchGeoData[] batch) throws Exception {
+    public List<BatchGeoData> analyzeDBSCAN(@RequestBody BatchInfoAndData batch) throws Exception {
         return batchDBSCANService.analyze(batch);
 
     }
     @PostMapping("/LOF")
-    public List<BatchGeoData> analyzeLOF(@RequestBody BatchGeoData[] batch) throws Exception {
+    public List<BatchGeoData> analyzeLOF(@RequestBody BatchInfoAndData batch) throws Exception {
         return batchLOFService.analyze(batch);
     }
     @PostMapping("/IsolationForest")
-    public List<BatchGeoData> analyzeIsolationForest(@RequestBody BatchGeoData[] batch) throws Exception {
+    public List<BatchGeoData> analyzeIsolationForest(@RequestBody BatchInfoAndData batch) throws Exception {
         return batchIsolationForestService.analyze(batch);
     }
     @PostMapping("/Gauss")
-    public List<BatchGeoData> analyzeGauss(@RequestBody BatchGeoData[] batch) throws Exception {
+    public List<BatchGeoData> analyzeGauss(@RequestBody BatchInfoAndData batch) throws Exception {
         return batchGaussBasedService.analyze(batch);
     }
 }

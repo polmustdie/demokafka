@@ -26,10 +26,15 @@ public class IsolationForests extends Algo<IFNode>{
 //	private static Instances dataset;
 	//number of instances in itree
 	public static final int INSTANCES_NUMBER = 30;
+	public static  int instances_number_test;
 	// number of trees
 	public static final int TREES_NUMBER = 15;
+	public static  int trees_number_test;
+
 	// threshold
 	public static final double S_THRESHOLD = 0.5;
+	public static  double s_threshold_test;
+
 
 
 
@@ -55,9 +60,12 @@ public class IsolationForests extends Algo<IFNode>{
 //		return nodeset;
 //	}
 	
-	public IsolationForests(String path){
+	public IsolationForests(String path, ArrayList<Object> constants){
 		super(path);
 		nodeset.clear();
+		instances_number_test = Integer.parseInt(constants.get(0).toString());
+		trees_number_test = Integer.parseInt(constants.get(1).toString());
+		s_threshold_test = Double.parseDouble(constants.get(2).toString());
 //
 //		ARFFReader reader = new ARFFReader(path);
 //		dataset = reader.getDataset();
@@ -111,14 +119,14 @@ public class IsolationForests extends Algo<IFNode>{
 	public void setAnomalyScore() throws Exception{
 		
 		IsolationForest iforest = new IsolationForest();
-		iforest.setNumTrees(TREES_NUMBER);
-		iforest.setSubsampleSize(INSTANCES_NUMBER);
+		iforest.setNumTrees(trees_number_test);
+		iforest.setSubsampleSize(instances_number_test);
 		iforest.buildClassifier(dataset);
 		
 		for(int i = 0; i< nodeset.size(); i++){
 			double score = iforest.distributionForInstance(dataset.get(i))[1];
 			nodeset.get(i).setScore(score);
-			if(score >= S_THRESHOLD){
+			if(score >= s_threshold_test){
 				nodeset.get(i).setPrelabel("outlier");
 			}
 		}

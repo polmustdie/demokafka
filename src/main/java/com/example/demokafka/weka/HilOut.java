@@ -28,9 +28,10 @@ public class HilOut extends Algo<HILNode>{
 //	private Instances dataset;
 	
 	public static final int K = 5;
+	public static  int k_test;
 	// top n outliers
 	public static final double N = 0.5;
-	
+	public static  double n_test;
 	private static final  List<HILNode> nodeset = new ArrayList<>();
 	
 	private static final List<double[]> lsDistance = new ArrayList<>();
@@ -46,8 +47,11 @@ public class HilOut extends Algo<HILNode>{
 //		return normals;
 //	}
 
-	public HilOut(String path){
+	public HilOut(String path, ArrayList<Object> constants){
 		super(path);
+		k_test = Integer.parseInt(constants.get(0).toString());
+		n_test = Double.parseDouble(constants.get(1).toString());
+
 		nodeset.clear();
 		lsDistance.clear();
 		
@@ -119,7 +123,7 @@ public class HilOut extends Algo<HILNode>{
 		
 		// k nearest neighbors for each instance
 		for(int i=0; i<lsDistance.size(); i++){
-			double kdis = DistanceCalculator.findKDistance(lsDistance.get(i), K);
+			double kdis = DistanceCalculator.findKDistance(lsDistance.get(i), k_test);
 			HILNode currentInstance = nodeset.get(i);
 			for(int j=0; j<lsDistance.size(); j++){
 				if(currentInstance.getDistanceToOther(nodeset.get(j)) <= kdis && j != i){
@@ -132,7 +136,7 @@ public class HilOut extends Algo<HILNode>{
 	
 	private void rankingByWeights(){
 		nodeset.sort(new WeightComparator());
-		int outlierNum = (int)(nodeset.size()*N);
+		int outlierNum = (int)(nodeset.size()*n_test);
 		
 		for(int i=0; i<outlierNum; i++){
 			nodeset.get(i).setPrelabel("outlier");

@@ -1,6 +1,7 @@
 package com.example.demokafka.service;
 
 import com.example.demokafka.model.BatchGeoData;
+import com.example.demokafka.model.BatchInfoAndData;
 import com.example.demokafka.weka.*;
 import com.example.demokafka.weka.utils.CsvArffConverter;
 import com.example.demokafka.weka.utils.JsonToCsv;
@@ -19,10 +20,12 @@ public class BatchDBSCANService {
     ObjectMapper mapper;
     @Autowired
     JsonToArffService jsonToArffService;
-    public List<BatchGeoData> analyze(BatchGeoData[] batchGeoData) {
-        String path = jsonToArffService.convert(batchGeoData);
+    public List<BatchGeoData> analyze(BatchInfoAndData batchGeoData) {
+        ArrayList<Object> constants = batchGeoData.getConstants();
+
+        String path = jsonToArffService.convert(batchGeoData.getData());
         System.out.println(path);
-        DBSCANs gb = new DBSCANs(path);
+        DBSCANs gb = new DBSCANs(path, constants);
 
         gb.showResults(gb.getNodeset());
         return gb.getNodes();

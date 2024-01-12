@@ -19,11 +19,11 @@ import java.util.List;
 public class BatchGaussBasedService {
     @Autowired
     JsonToArffService jsonToArffService;
-    public List<BatchGeoData> analyze(BatchGeoData[] batchGeoData) {
+    public List<BatchGeoData> analyze(BatchInfoAndData batchGeoData) {
 
-
-        String path = jsonToArffService.convert(batchGeoData);
-        GaussBased gb = new GaussBased(path);
+        ArrayList<Object> constants = batchGeoData.getConstants();
+        String path = jsonToArffService.convert(batchGeoData.getData());
+        GaussBased gb = new GaussBased(path, constants);
 
 
 

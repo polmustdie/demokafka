@@ -29,6 +29,7 @@ import java.util.List;
 public class GaussBased extends Algo<GAUNode>{
 	//top n outliers
 	public static final double N = 0.1;
+	public static double n_test;
 //	public static double threshold = 1.0E-07;
 	
 	private static List<GAUNode> nodeset = new ArrayList<>();
@@ -48,9 +49,11 @@ public class GaussBased extends Algo<GAUNode>{
 //		return nodes;
 //	}
 
-	public GaussBased(String path){
+	public GaussBased(String path, ArrayList<Object> constants){
 		super(path);
 		nodeset.clear();
+		n_test = Double.parseDouble(constants.get(0).toString());
+
 		
 //		ARFFReader reader = new ARFFReader(path);
 //		dataset = reader.getDataset();
@@ -166,7 +169,7 @@ public class GaussBased extends Algo<GAUNode>{
 //    return best_f1, best_epsilon
 	private void rankingByProbability(){
 		Collections.sort(nodeset, new ProbabilityComparator());
-		int topNum = (int)(N*nodeset.size());
+		int topNum = (int)(n_test*nodeset.size());
 //		double mean = 0;
 //		for (int i = 0; i<nodeset.size(); i++){
 //			mean = mean + nodeset.get(i).getProbability();

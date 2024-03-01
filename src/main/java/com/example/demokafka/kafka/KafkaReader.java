@@ -1,9 +1,11 @@
 package com.example.demokafka.kafka;
 
-import com.example.demokafka.model.GeoData;
-import com.example.demokafka.model.KafkaProperties;
+import com.example.demokafka.model.*;
+import com.example.demokafka.service.BatchDBSCANService;
+import com.example.demokafka.service.GeoService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +16,8 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.*;
 
@@ -24,11 +28,17 @@ import java.util.*;
 public class KafkaReader {
     private KafkaProperties props;
     private String subscribeString;
-    private long updateIntervalSec;
     private Properties properties;
     private KafkaConsumer<String, String> consumer;
+    ObjectMapper mapper = new ObjectMapper();
+    private HashMap<Integer, BatchGeoData> map;
+    BatchDBSCANService dbscanService = new BatchDBSCANService();
+    GeoService geoService;
+    List<GeoDataFlag> data = new ArrayList<>();
+    ArrayList<Object> constants;
+    int mode;
 
-    public KafkaReader(KafkaProperties props) {
+    public KafkaReader(KafkaProperties props, GeoService geoService, KafkaPropertiesAndMode propertiesAndMode) {
         this.props = props;
         properties = new Properties();
         properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, props.getBootstrapServers());
@@ -37,27 +47,15 @@ public class KafkaReader {
         properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
         properties.put(ConsumerConfig.GROUP_ID_CONFIG, "tc-" + UUID.randomUUID());
         consumer = new KafkaConsumer<>(properties);
+        this.geoService = geoService;
+        this.constants = propertiesAndMode.getConstants();
+        this.mode = propertiesAndMode.getMode();
 
     }
 
     public void processing() {
         KafkaWriter kafkaWriter = new KafkaWriter(props);
-//        MyRuleProcessor processor = new MyRuleProcessor(config);
-//        db = new MyDbReader(config.getConfig("db"));
-//        rules = db.readRulesFromDB();
-//        updateIntervalSec = config.getConfig("application").getInt("updateIntervalSec");
-//        TimerTask task = new TimerTask() {
-//            public void run() {
-//                rules = db.readRulesFromDB();
-//                for (Rule r :
-//                        rules) {
-//                    log.debug(r.toString());
-//                }
-//            }
-//        };
-//        Timer timer = new Timer(true);
-//        timer.schedule(task, 0, 1000 * updateIntervalSec);
-
+        GeoData geoDataFromKafka;
         try {
             consumer.subscribe(Collections.singleton(props.getTopic()));
             ConsumerRecords<String, String> records;
@@ -65,20 +63,118 @@ public class KafkaReader {
                 records = consumer.poll(Duration.ofMillis(100));
                 if (!records.isEmpty()) {
                     for (ConsumerRecord<String, String> consumerRecord : records) {
+                        ObjectMapper objectMapper = new ObjectMapper();
+                        geoDataFromKafka = objectMapper.readValue(consumerRecord.value(), GeoData.class);
 
                         log.info("Message {} read from topic {}", consumerRecord.value(), props.getTopic());
-//                        message = new GeoData(consumerRecord.value());
-//                        log.debug("check: " + message.getValue());
-//                        if (message.isDeduplicationState()) {
-                        kafkaWriter.processing(consumerRecord.value());
-
-
+                        geoService.saveClick(geoDataFromKafka);
+                        log.info("Successfully added point {} to points clickhouse table", geoDataFromKafka);
+//                        kafkaWriter.processing(consumerRecord.value());
                     }
                 }
 
             }
         } catch (Exception e) {
             log.info("Exception caught at kafkaReader processing");
+        }
+    }
+
+    public void readFromDb(){
+        TimerTask task = new TimerTask() {
+            public void run() {
+                System.out.println("timer task is called");
+                data = geoService.getGeoDataClickFlag();
+            }
+        };
+
+        Timer timer = new Timer(true);
+
+        timer.schedule(task, 0, 1000L * 20);
+
+    }
+
+    public void analyze(){
+        Collection<BatchGeoData> values = new ArrayList<>();
+        BatchGeoData batchData;
+        Date date;
+        List<BatchGeoData> nodes;
+        while (true) {
+
+            if (data.size()>=10) {
+                for (GeoDataFlag record : data) {
+                    log.info("Record from clickhouse db", record.toString());
+                    try {
+                        date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                                .parse(record.getTimestamp());
+                        batchData = new BatchGeoData(date, (double) record.getLongitude(), (double) record.getLatitude(), record.getFlag());
+                        values.add(batchData);
+                    } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                    }
+                }
+                BatchInfoAndData batch = new BatchInfoAndData(constants, values);
+                nodes = dbscanService.analyze(batch);
+                System.out.println("IAKJKJBKJWNKLWJBWJLWBL");
+                break;
+//;                        if (map.size() >= 15) {
+//                            Collection<BatchGeoData> values = map.values();
+//
+//                            BatchInfoAndData batch = new BatchInfoAndData(constants, values);
+//                            nodes = dbscanService.analyze(batch);
+//                            map.clear();
+//                            for (int i = 0; i < nodes.size(); i++) {
+//                                System.out.println(nodes.get(i));
+//                            }
+//                        } else {
+//                            map.put(j, data);
+//                            j = j+1;
+//                        }
+                }
+            }
+
+
+        }
+
+
+
+
+    public void processing(ArrayList<Object> constants, int mode) {
+        KafkaWriter kafkaWriter = new KafkaWriter(props);
+        BatchGeoData data;
+        map = new HashMap();
+        List<BatchGeoData> nodes = null;
+        consumer.subscribe(Collections.singleton(props.getTopic()));
+        ConsumerRecords<String, String> records;
+        int j = 1;
+        while (true) {
+            while (!Thread.interrupted()) {
+                records = consumer.poll(Duration.ofMillis(100));
+                if (!records.isEmpty()) {
+                    for (ConsumerRecord<String, String> consumerRecord : records) {
+                        log.info("Message {} read from topic {}", consumerRecord.value(), props.getTopic());
+                        try {
+                            data = mapper.readValue(consumerRecord.value(), BatchGeoData.class);
+                            if (map.size() >= 15) {
+                                Collection<BatchGeoData> values = map.values();
+
+                                BatchInfoAndData batch = new BatchInfoAndData(constants, values);
+                                nodes = dbscanService.analyze(batch);
+                                map.clear();
+                                for (int i = 0; i < nodes.size(); i++) {
+                                    System.out.println(nodes.get(i));
+                                }
+                            } else {
+                                map.put(j, data);
+                                j = j+1;
+                            }
+                        }
+                        catch (JsonProcessingException ex) {
+                            System.out.println("JsonProcessingException caught" + ex.getMessage());
+                        }
+                    }
+                }
+
+            }
         }
 
     }

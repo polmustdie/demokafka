@@ -20,11 +20,12 @@ public class JsonToCsv {
 //        JsonNode data = jsonNode.get("data");
 
         CsvSchema.Builder builder = CsvSchema.builder()
+                .addColumn("date")
                 .addColumn("x")
                 .addColumn("y")
                 .addColumn("flag");
 
-        CsvSchema csvSchema = builder.build().withHeader();
+        CsvSchema csvSchema = builder.build().withHeader().withoutQuoteChar();
 
         CsvMapper csvMapper = new CsvMapper();
         csvMapper.configure(Feature.IGNORE_UNKNOWN, true);

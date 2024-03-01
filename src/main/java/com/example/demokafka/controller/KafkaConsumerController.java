@@ -1,7 +1,7 @@
 package com.example.demokafka.controller;
-
 import com.example.demokafka.kafka.KafkaReader;
-import com.example.demokafka.model.KafkaProperties;
+import com.example.demokafka.model.KafkaPropertiesAndMode;
+import com.example.demokafka.service.GeoService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 //import dev.atken.springkafkadynamicconsumer.listener.KafkaListenerContainerManager;
@@ -10,7 +10,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 //import dev.atken.springkafkadynamicconsumer.model.KafkaConsumerResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 @Slf4j
@@ -19,13 +26,29 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(path = "/consumers")
 public class KafkaConsumerController {
     ObjectMapper mapper;
+    @Autowired
+    GeoService geoService;
 
-    @PostMapping
-    public void create(@RequestBody KafkaProperties properties) {
+//    @PostMapping("/create")
+//    public void create(@RequestBody KafkaProperties properties) {
+//        mapper = new ObjectMapper();
+////        KafkaProperties props = mapper.readValue(properties, KafkaProperties.class);
+//        KafkaReader kafkaReader = new KafkaReader(properties);
+//        kafkaReader.processing();
+//    }
+
+    @PostMapping("/createSend")
+    public void createAndSend(@RequestBody KafkaPropertiesAndMode properties) {
         mapper = new ObjectMapper();
+        ArrayList<Object> constants = properties.getConstants();
+        int mode = properties.getMode();
 //        KafkaProperties props = mapper.readValue(properties, KafkaProperties.class);
-        KafkaReader kafkaReader = new KafkaReader(properties);
-        kafkaReader.processing();
+        KafkaReader kafkaReader = new KafkaReader(properties.getProperties(), geoService, properties);
+//        kafkaReader.processing();
+        ExecutorService executorService = Executors.newCachedThreadPool();
+        executorService.execute(kafkaReader::processing);
+        executorService.execute(kafkaReader::readFromDb);
+        executorService.execute(kafkaReader::analyze);
     }
 
 

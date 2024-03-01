@@ -7,6 +7,11 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 
 public class CsvArffConverter
 
@@ -26,7 +31,11 @@ public class CsvArffConverter
                 writer.write(dataSet.toString());
                 writer.flush();
             }
+            List<String> lines = Files.readAllLines(Path.of(destpath), StandardCharsets.UTF_8);
+            lines.set(2, "@attribute date date \"yyyy-MM-dd HH:mm:ss\"");
+            Files.write(Path.of(destpath), lines, StandardCharsets.UTF_8);
         }
+
         catch(IOException e){
             System.out.println("Caught IOException");
         }

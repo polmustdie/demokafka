@@ -1,23 +1,22 @@
 package com.example.demokafka.model;
 
-//import jakarta.persistence.Column;
-//import jakarta.persistence.Entity;
-//import jakarta.persistence.Id;
-//import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.Date;
+
 @Data
-//@Entity
-//@Table(name = "points")
+@Entity
+@Table(name = "points")
 public class GeoData {
-//    @Id
-//    @Column(name="id")
+    @Id
+    @Column(name="id")
     private int userId;
-//    @Column(name="date")
+    @Column(name="date")
     private String date;
-//    @Column(name="longitude")
+    @Column(name="longitude")
     private float longitude;
-//    @Column(name="latitude")
+    @Column(name="latitude")
     private float latitude;
 
 

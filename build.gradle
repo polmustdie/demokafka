@@ -24,7 +24,7 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.kafka:spring-kafka'
-	compileOnly 'org.projectlombok:lombok'
+    compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.kafka:spring-kafka-test'
@@ -45,6 +45,24 @@ dependencies {
 	implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-csv', version: '2.13.0'
 	// https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
 	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.0'
+
+	// https://mvnrepository.com/artifact/cc.blynk.clickhouse/clickhouse4j
+//	implementation group: 'cc.blynk.clickhouse', name: 'clickhouse4j', version: '1.4.4'
+
+	//clickhouse
+//	implementation 'io.github.pelenthium:clickhouse-dialect-spring-boot-starter:1.2.0'
+//	// https://mvnrepository.com/artifact/ru.yandex.clickhouse/clickhouse-jdbc
+	implementation group: 'ru.yandex.clickhouse', name: 'clickhouse-jdbc', version: '0.3.1'
+//	implementation group: 'com.github.housepower', name: 'clickhouse-native-jdbc-shaded', version: '2.5.4'
+
+
+	// databases
+	implementation 'org.postgresql:postgresql:42.5.4'
+	implementation 'com.zaxxer:HikariCP:5.0.1'
+	implementation 'org.jooq:jooq:3.17.8'
+	//spring jpa
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.0.5'
+
 
 
 

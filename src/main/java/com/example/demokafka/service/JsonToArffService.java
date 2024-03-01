@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -28,6 +29,26 @@ public class JsonToArffService {
     private String arffData;
 //    private String arffData = "/Users/polinanesterova/Downloads/demokafka/src/main/resources/dataArff.arff";
     private ObjectMapper mapper;
+
+    public String convert(Collection<BatchGeoData> batchGeoData) {
+        mapper = new ObjectMapper();
+        ObjectWriter writer = mapper.writer(new DefaultPrettyPrinter());
+        try {
+
+            writer.writeValue(new File("src/main/resources/static/data.json"), batchGeoData);
+            JsonToCsv.createCsv("src/main/resources/static/data.json");
+            CsvArffConverter.convertCsvToArff("src/main/resources/dataFromCsv.csv", "src/main/resources/static/dataArff.arff");
+        }
+        catch (IOException e){
+            System.out.println("Caught IOException in converting");
+            e.printStackTrace();
+        }
+        return "src/main/resources/static/dataArff.arff";
+
+
+
+    }
+
     public String convert(ArrayList<BatchGeoData> batchGeoData) {
         mapper = new ObjectMapper();
         ObjectWriter writer = mapper.writer(new DefaultPrettyPrinter());
@@ -63,4 +84,5 @@ public class JsonToArffService {
 
 
     }
+
 }

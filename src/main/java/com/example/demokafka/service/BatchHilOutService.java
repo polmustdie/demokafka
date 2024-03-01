@@ -19,13 +19,26 @@ import java.util.List;
 public class BatchHilOutService {
     @Autowired
     JsonToArffService jsonToArffService;
-    public List<BatchGeoData> analyze(BatchInfoAndData batchGeoData) throws Exception {
+        public List<BatchGeoData> analyze(BatchInfoAndData batchGeoData) {
+
         ArrayList<Object> constants = batchGeoData.getConstants();
         String path = jsonToArffService.convert(batchGeoData.getData());
         HilOut gb = new HilOut(path, constants);
+
+
+
         gb.showResults(gb.getNodeset());
         return gb.getNodes();
 
 
     }
+//    public List<BatchGeoData> analyze(BatchInfoAndData batchGeoData) throws Exception {
+//        ArrayList<Object> constants = batchGeoData.getConstants();
+//        String path = jsonToArffService.convert((ArrayList<BatchGeoData>) batchGeoData.getData());
+//        HilOut gb = new HilOut(path, constants);
+//        gb.showResults(gb.getNodeset());
+//        return gb.getNodes();
+
+
+//    }
 }

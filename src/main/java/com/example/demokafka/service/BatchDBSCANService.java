@@ -18,8 +18,8 @@ import java.util.List;
 @Service
 public class BatchDBSCANService {
     ObjectMapper mapper;
-    @Autowired
-    JsonToArffService jsonToArffService;
+//    @Autowired
+    JsonToArffService jsonToArffService = new JsonToArffService();
     public List<BatchGeoData> analyze(BatchInfoAndData batchGeoData) {
         ArrayList<Object> constants = batchGeoData.getConstants();
 

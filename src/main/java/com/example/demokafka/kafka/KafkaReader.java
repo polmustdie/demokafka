@@ -1,9 +1,8 @@
 package com.example.demokafka.kafka;
 
 import com.example.demokafka.model.*;
-import com.example.demokafka.service.BatchDBSCANService;
-import com.example.demokafka.service.GeoService;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.example.demokafka.service.*;
+import com.example.demokafka.weka.Algo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +31,6 @@ public class KafkaReader {
     private KafkaConsumer<String, String> consumer;
     ObjectMapper mapper = new ObjectMapper();
     private HashMap<Integer, BatchGeoData> map;
-    BatchDBSCANService dbscanService = new BatchDBSCANService();
     GeoService geoService;
     List<GeoDataFlag> data = new ArrayList<>();
     ArrayList<Object> constants;
@@ -94,10 +92,13 @@ public class KafkaReader {
     }
 
     public void analyze(){
+        geoService.updateIsNewField(data, true);
+
         Collection<BatchGeoData> values = new ArrayList<>();
         BatchGeoData batchData;
         Date date;
         List<BatchGeoData> nodes;
+        BatchAlgoService service;
         while (true) {
 
             if (data.size()>=10) {
@@ -113,8 +114,26 @@ public class KafkaReader {
                     }
                 }
                 BatchInfoAndData batch = new BatchInfoAndData(constants, values);
-                nodes = dbscanService.analyze(batch);
+                switch (mode){
+                    case 1:
+                        service = new BatchDBSCANService();
+                        break;
+                    case 2:
+                        service = new BatchGaussBasedService();
+                        break;
+                    case 3:
+                        service = new BatchHilOutService();
+                        break;
+                    case 4:
+                        service = new BatchIsolationForestService();
+                        break;
+                    default:
+                        service = new BatchLOFService();
+
+                }
+                nodes = service.analyze(batch);
                 System.out.println("IAKJKJBKJWNKLWJBWJLWBL");
+                geoService.updateIsNewField(data, false);
                 break;
 //;                        if (map.size() >= 15) {
 //                            Collection<BatchGeoData> values = map.values();
@@ -137,45 +156,45 @@ public class KafkaReader {
 
 
 
-
-    public void processing(ArrayList<Object> constants, int mode) {
-        KafkaWriter kafkaWriter = new KafkaWriter(props);
-        BatchGeoData data;
-        map = new HashMap();
-        List<BatchGeoData> nodes = null;
-        consumer.subscribe(Collections.singleton(props.getTopic()));
-        ConsumerRecords<String, String> records;
-        int j = 1;
-        while (true) {
-            while (!Thread.interrupted()) {
-                records = consumer.poll(Duration.ofMillis(100));
-                if (!records.isEmpty()) {
-                    for (ConsumerRecord<String, String> consumerRecord : records) {
-                        log.info("Message {} read from topic {}", consumerRecord.value(), props.getTopic());
-                        try {
-                            data = mapper.readValue(consumerRecord.value(), BatchGeoData.class);
-                            if (map.size() >= 15) {
-                                Collection<BatchGeoData> values = map.values();
-
-                                BatchInfoAndData batch = new BatchInfoAndData(constants, values);
-                                nodes = dbscanService.analyze(batch);
-                                map.clear();
-                                for (int i = 0; i < nodes.size(); i++) {
-                                    System.out.println(nodes.get(i));
-                                }
-                            } else {
-                                map.put(j, data);
-                                j = j+1;
-                            }
-                        }
-                        catch (JsonProcessingException ex) {
-                            System.out.println("JsonProcessingException caught" + ex.getMessage());
-                        }
-                    }
-                }
-
-            }
-        }
-
-    }
+//
+//    public void processing(ArrayList<Object> constants, int mode) {
+//        KafkaWriter kafkaWriter = new KafkaWriter(props);
+//        BatchGeoData data;
+//        map = new HashMap();
+//        List<BatchGeoData> nodes = null;
+//        consumer.subscribe(Collections.singleton(props.getTopic()));
+//        ConsumerRecords<String, String> records;
+//        int j = 1;
+//        while (true) {
+//            while (!Thread.interrupted()) {
+//                records = consumer.poll(Duration.ofMillis(100));
+//                if (!records.isEmpty()) {
+//                    for (ConsumerRecord<String, String> consumerRecord : records) {
+//                        log.info("Message {} read from topic {}", consumerRecord.value(), props.getTopic());
+//                        try {
+//                            data = mapper.readValue(consumerRecord.value(), BatchGeoData.class);
+//                            if (map.size() >= 15) {
+//                                Collection<BatchGeoData> values = map.values();
+//
+//                                BatchInfoAndData batch = new BatchInfoAndData(constants, values);
+//                                nodes = dbscanService.analyze(batch);
+//                                map.clear();
+//                                for (int i = 0; i < nodes.size(); i++) {
+//                                    System.out.println(nodes.get(i));
+//                                }
+//                            } else {
+//                                map.put(j, data);
+//                                j = j+1;
+//                            }
+//                        }
+//                        catch (JsonProcessingException ex) {
+//                            System.out.println("JsonProcessingException caught" + ex.getMessage());
+//                        }
+//                    }
+//                }
+//
+//            }
+//        }
+//
+//    }
 }

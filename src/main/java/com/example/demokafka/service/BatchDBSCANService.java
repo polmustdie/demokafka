@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class BatchDBSCANService {
+public class BatchDBSCANService extends BatchAlgoService  {
     ObjectMapper mapper;
 //    @Autowired
     JsonToArffService jsonToArffService = new JsonToArffService();

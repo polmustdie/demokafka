@@ -17,10 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class BatchLOFService {
-    @Autowired
-    JsonToArffService jsonToArffService;
-    public List<BatchGeoData> analyze(BatchInfoAndData batch) throws Exception {
+public class BatchLOFService extends BatchAlgoService{
+    JsonToArffService jsonToArffService = new JsonToArffService();
+    public List<BatchGeoData> analyze(BatchInfoAndData batch) {
 //        final String json = "{\"contentType\": \"foo\", \"fooField1\": ... }";
 //        final JsonNode node = new ObjectMapper().readTree(json);
 ////                    ^^^^^^^^^^^^^^^^^^

@@ -17,10 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class BatchIsolationForestService {
-    @Autowired
-    JsonToArffService jsonToArffService;
-    public List<BatchGeoData> analyze(BatchInfoAndData batch) throws Exception {
+public class BatchIsolationForestService extends BatchAlgoService{
+    JsonToArffService jsonToArffService = new JsonToArffService();
+    public List<BatchGeoData> analyze(BatchInfoAndData batch) {
         ArrayList<Object> constants = batch.getConstants();
         String path = jsonToArffService.convert(batch.getData());
         IsolationForests gb = new IsolationForests(path, constants);

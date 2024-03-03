@@ -2,11 +2,12 @@ package com.example.demokafka.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
 
-import java.util.Date;
 
 @Data
 @Entity
+@Getter
 @Table(name = "geo_points")
 public class GeoDataFlag {
     @Id

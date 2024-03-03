@@ -16,9 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class BatchHilOutService {
-    @Autowired
-    JsonToArffService jsonToArffService;
+public class BatchHilOutService extends BatchAlgoService{
+    JsonToArffService jsonToArffService = new JsonToArffService();
         public List<BatchGeoData> analyze(BatchInfoAndData batchGeoData) {
 
         ArrayList<Object> constants = batchGeoData.getConstants();

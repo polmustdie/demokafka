@@ -7,7 +7,6 @@ import com.example.demokafka.weka.nodes.WekaNode;
 import com.example.demokafka.weka.utils.ARFFReader;
 import com.example.demokafka.weka.utils.MeasureCalculator;
 import weka.core.Instances;
-import weka.core.ProtectedProperties;
 
 import java.util.ArrayList;
 import java.util.List;

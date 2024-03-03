@@ -69,6 +69,13 @@ public class GeoService {
         return ans;
     }
 
+    public void updateIsNewField(List<GeoDataFlag> data, Boolean bool) {
+        String sql = "ALTER TABLE geo_points UPDATE new=? where id=?";
+        for (GeoDataFlag datum : data){
+            jdbcTemplateClick.update(sql, bool, datum.getId());
+        }
+    }
+
     public void saveClickFlag(GeoDataFlag data){
         String sql = "INSERT INTO geo_points(id, user_id, longitude, latitude, flag, timestamp, new) values(?, ?, ?, ?)";
         jdbcTemplateClick.update(sql,

@@ -44,7 +44,7 @@ public class Algo<T extends WekaNode> {
         System.out.println("\n---------------- Detected Outliers ------------------\n");
         for(int i=0; i<nodeset.size(); i++){
             if(nodeset.get(i).isOutlier())
-                System.out.println( "Label: " + nodeset.get(i).getLabel()+" x y " + nodeset.get(i).getLsAttr());
+                System.out.println( "Label: " + nodeset.get(i).getLabel()+" x y " + nodeset.get(i).getLsAttr() + nodeset.get(i).getDate());
         }
         System.out.println("\n---------------- Detected Normals ------------------\n");
         for(int i=0; i<nodeset.size(); i++){
@@ -85,8 +85,9 @@ public class Algo<T extends WekaNode> {
 
             if (nodeset.get(i).isOutlier()) {
                 data = new BatchGeoData();
-                data.setX(nodeset.get(i).getLsAttr().get(0));
-                data.setY(nodeset.get(i).getLsAttr().get(1));
+                data.setX(nodeset.get(i).getLsAttr().get(1));
+                data.setY(nodeset.get(i).getLsAttr().get(2));
+                data.setDate(nodeset.get(i).getDate());
                 data.setFlag("");
 //			outliers.add(nodeset.get(i).getAttr());
                 outliers.add(data);
@@ -98,8 +99,9 @@ public class Algo<T extends WekaNode> {
         for (int i = 0; i < nodeset.size(); i++) {
             if (!nodeset.get(i).isOutlier()) {
                 data = new BatchGeoData();
-                data.setX(nodeset.get(i).getLsAttr().get(0));
-                data.setY(nodeset.get(i).getLsAttr().get(1));
+                data.setX(nodeset.get(i).getLsAttr().get(1));
+                data.setY(nodeset.get(i).getLsAttr().get(2));
+                data.setDate(nodeset.get(i).getDate());
                 data.setFlag("");
                 normals.add(data);
                 data.setFlag(String.valueOf(nodeset.get(i).isOutlier()));

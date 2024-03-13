@@ -24,6 +24,8 @@ public class JsonToCsv {
                 .addColumn("x")
                 .addColumn("y")
                 .addColumn("flag");
+//                .addColumn("id")
+//                .addColumn("user_id");
 
         CsvSchema csvSchema = builder.build().withHeader().withoutQuoteChar();
 

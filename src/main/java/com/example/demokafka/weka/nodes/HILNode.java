@@ -4,6 +4,7 @@ import com.example.demokafka.weka.HilOut;
 import com.example.demokafka.weka.utils.DistanceCalculator;
 import weka.core.Instance;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class HILNode extends WekaNode {
     private double weight = 0.0d; // weight value
 
 
-    public HILNode(Instance instance) {
+    public HILNode(Instance instance) throws ParseException {
         super(instance);
     }
 

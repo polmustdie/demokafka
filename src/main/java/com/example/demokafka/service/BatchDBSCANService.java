@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class BatchDBSCANService extends BatchAlgoService  {
     ObjectMapper mapper;
 //    @Autowired
     JsonToArffService jsonToArffService = new JsonToArffService();
-    public List<BatchGeoData> analyze(BatchInfoAndData batchGeoData) {
+    public List<BatchGeoData> analyze(BatchInfoAndData batchGeoData) throws ParseException {
         ArrayList<Object> constants = batchGeoData.getConstants();
 
         String path = jsonToArffService.convert(batchGeoData.getData());

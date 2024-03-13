@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,13 +21,19 @@ import java.util.List;
 public class BatchIsolationForestService extends BatchAlgoService{
     JsonToArffService jsonToArffService = new JsonToArffService();
     public List<BatchGeoData> analyze(BatchInfoAndData batch) {
+        ArrayList<BatchGeoData> data = new ArrayList<>();
         ArrayList<Object> constants = batch.getConstants();
         String path = jsonToArffService.convert(batch.getData());
-        IsolationForests gb = new IsolationForests(path, constants);
+        try {
+            IsolationForests gb = new IsolationForests(path, constants);
+            gb.showResults(gb.getNodeset());
+            return gb.getNodes();
+        }
+        catch (ParseException ex){
+            ex.printStackTrace();
+        }
 
-        gb.showResults(gb.getNodeset());
-        return gb.getNodes();
-
+        return data;
 
     }
 }

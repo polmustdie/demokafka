@@ -2,6 +2,8 @@ package com.example.demokafka.weka.nodes;
 
 import weka.core.Instance;
 
+import java.text.ParseException;
+
 /***
  * <p>This class <b>LOFNode</b> is used to simulate the characteristic of each instance.</p>
  *
@@ -13,7 +15,7 @@ public class LOFNode extends WekaNode {
     /**
      * To initialize the instance with features and class label
      */
-    public LOFNode(Instance instance) {
+    public LOFNode(Instance instance) throws ParseException {
         super(instance);
     }
 

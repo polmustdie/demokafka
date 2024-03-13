@@ -14,6 +14,7 @@ import weka.core.neighboursearch.LinearNNSearch;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.LOF;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -62,7 +63,7 @@ public class LocalOutlierFactor extends Algo<LOFNode>{
 //		return nodes;
 //	}
 	
-	public LocalOutlierFactor(String path, ArrayList<Object> constants){
+	public LocalOutlierFactor(String path, ArrayList<Object> constants) throws ParseException {
 
 		super(path);
 		nodeset.clear();

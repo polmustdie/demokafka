@@ -9,6 +9,7 @@ import weka.clusterers.DBSCAN;
 import weka.core.Instance;
 import weka.core.Instances;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class DBSCANs extends Algo<SBSNode>{
 		return nodeset;
 	}
 
-	public DBSCANs(String path, ArrayList<Object> constants){
+	public DBSCANs(String path, ArrayList<Object> constants) throws ParseException {
 		super(path, true);
 		eps_test = Double.parseDouble(constants.get(0).toString());
 		min_points_test = Integer.parseInt(constants.get(1).toString());

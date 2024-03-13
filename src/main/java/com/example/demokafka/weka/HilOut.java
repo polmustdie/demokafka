@@ -11,6 +11,7 @@ import weka.core.Instance;
 import weka.core.Instances;
 
 import java.lang.reflect.Array;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,7 +48,7 @@ public class HilOut extends Algo<HILNode>{
 //		return normals;
 //	}
 
-	public HilOut(String path, ArrayList<Object> constants){
+	public HilOut(String path, ArrayList<Object> constants) throws ParseException {
 		super(path);
 		k_test = Integer.parseInt(constants.get(0).toString());
 		n_test = Double.parseDouble(constants.get(1).toString());

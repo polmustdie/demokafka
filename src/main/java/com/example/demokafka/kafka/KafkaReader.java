@@ -1,8 +1,12 @@
 package com.example.demokafka.kafka;
 
 import com.example.demokafka.model.*;
+import com.example.demokafka.repository.PostgreRepository;
 import com.example.demokafka.service.*;
 import com.example.demokafka.weka.Algo;
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +17,8 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 
 import java.text.ParseException;
@@ -24,6 +30,7 @@ import java.util.*;
 @Getter
 @Setter
 @RequiredArgsConstructor
+@Service
 public class KafkaReader {
     private KafkaProperties props;
     private String subscribeString;
@@ -35,8 +42,11 @@ public class KafkaReader {
     List<GeoDataFlag> data = new ArrayList<>();
     ArrayList<Object> constants;
     int mode;
+    private KafkaWriter kafkaWriter;
+    private PostgreRepository postgreRepository;
 
-    public KafkaReader(KafkaProperties props, GeoService geoService, KafkaPropertiesAndMode propertiesAndMode) {
+    public KafkaReader(KafkaProperties props, GeoService geoService, KafkaPropertiesAndMode propertiesAndMode,
+                       PostgreRepository postgreRepository) {
         this.props = props;
         properties = new Properties();
         properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, props.getBootstrapServers());
@@ -48,7 +58,7 @@ public class KafkaReader {
         this.geoService = geoService;
         this.constants = propertiesAndMode.getConstants();
         this.mode = propertiesAndMode.getMode();
-
+        this.postgreRepository = postgreRepository;
     }
 
     public void processing() {
@@ -91,7 +101,10 @@ public class KafkaReader {
 
     }
 
-    public void analyze(){
+    public void analyze() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        KafkaWriter kafkaWriter = new KafkaWriter(props);
+
         geoService.updateIsNewField(data, true);
 
         Collection<BatchGeoData> values = new ArrayList<>();
@@ -110,7 +123,8 @@ public class KafkaReader {
                         batchData = new BatchGeoData(date, (double) record.getLongitude(), (double) record.getLatitude(), record.getFlag());
                         values.add(batchData);
                     } catch (ParseException e) {
-                    throw new RuntimeException(e);
+                        e.printStackTrace();
+//                    throw new RuntimeException(e);
                     }
                 }
                 BatchInfoAndData batch = new BatchInfoAndData(constants, values);
@@ -131,28 +145,32 @@ public class KafkaReader {
                         service = new BatchLOFService();
 
                 }
-                nodes = service.analyze(batch);
-                System.out.println("IAKJKJBKJWNKLWJBWJLWBL");
-                geoService.updateIsNewField(data, false);
-                break;
-//;                        if (map.size() >= 15) {
-//                            Collection<BatchGeoData> values = map.values();
-//
-//                            BatchInfoAndData batch = new BatchInfoAndData(constants, values);
-//                            nodes = dbscanService.analyze(batch);
-//                            map.clear();
-//                            for (int i = 0; i < nodes.size(); i++) {
-//                                System.out.println(nodes.get(i));
-//                            }
-//                        } else {
-//                            map.put(j, data);
-//                            j = j+1;
-//                        }
+                try {
+                    nodes = service.analyze(batch);
+                    System.out.println("IAKJKJBKJWNKLWJBWJLWBL");
+//                    geoService.updateIsNewField(data, false);
+                    data.clear();
+
+                    for (BatchGeoData node :nodes){
+                        try {
+                            kafkaWriter.processing(mapper.writeValueAsString(node));
+                            BatchGeoDataToPostgres dataToPostgres = new BatchGeoDataToPostgres(node.getDate(), node.getX(), node.getY(),
+                                    node.getFlag(), 1, 1);
+                            postgreRepository.save(dataToPostgres);
+                        }
+                        catch (JsonProcessingException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
                 }
+
             }
-
-
         }
+
+
+    }
 
 
 

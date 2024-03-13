@@ -13,13 +13,14 @@ import org.springframework.stereotype.Service;
 import org.w3c.dom.stylesheets.LinkStyle;
 
 import java.io.File;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class BatchLOFService extends BatchAlgoService{
     JsonToArffService jsonToArffService = new JsonToArffService();
-    public List<BatchGeoData> analyze(BatchInfoAndData batch) {
+    public List<BatchGeoData> analyze(BatchInfoAndData batch) throws ParseException {
 //        final String json = "{\"contentType\": \"foo\", \"fooField1\": ... }";
 //        final JsonNode node = new ObjectMapper().readTree(json);
 ////                    ^^^^^^^^^^^^^^^^^^

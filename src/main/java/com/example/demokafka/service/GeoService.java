@@ -60,7 +60,7 @@ public class GeoService {
         return ans;
     }
     public List<GeoDataFlag> getGeoDataClickFlag() {
-        String sql = "SELECT * FROM geo_points";
+        String sql = "SELECT * FROM geo_points where new=true";
 
         List<GeoDataFlag> ans =  jdbcTemplateClick.query(sql, new DataRowMapperFlag());
         for (int i = 0; i < ans.size(); i++){

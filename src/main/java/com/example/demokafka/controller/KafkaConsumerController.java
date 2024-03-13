@@ -1,6 +1,7 @@
 package com.example.demokafka.controller;
 import com.example.demokafka.kafka.KafkaReader;
 import com.example.demokafka.model.KafkaPropertiesAndMode;
+import com.example.demokafka.repository.PostgreRepository;
 import com.example.demokafka.service.GeoService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,6 +29,8 @@ public class KafkaConsumerController {
     ObjectMapper mapper;
     @Autowired
     GeoService geoService;
+    @Autowired
+    PostgreRepository postgreRepository;
 
 //    @PostMapping("/create")
 //    public void create(@RequestBody KafkaProperties properties) {
@@ -43,7 +46,7 @@ public class KafkaConsumerController {
         ArrayList<Object> constants = properties.getConstants();
         int mode = properties.getMode();
 //        KafkaProperties props = mapper.readValue(properties, KafkaProperties.class);
-        KafkaReader kafkaReader = new KafkaReader(properties.getProperties(), geoService, properties);
+        KafkaReader kafkaReader = new KafkaReader(properties.getProperties(), geoService, properties, postgreRepository);
 //        kafkaReader.processing();
         ExecutorService executorService = Executors.newCachedThreadPool();
         executorService.execute(kafkaReader::processing);

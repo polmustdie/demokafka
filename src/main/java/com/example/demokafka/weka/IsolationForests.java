@@ -9,6 +9,7 @@ import weka.classifiers.misc.IsolationForest;
 import weka.core.Instance;
 import weka.core.Instances;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,7 +61,7 @@ public class IsolationForests extends Algo<IFNode>{
 //		return nodeset;
 //	}
 	
-	public IsolationForests(String path, ArrayList<Object> constants){
+	public IsolationForests(String path, ArrayList<Object> constants) throws ParseException {
 		super(path);
 		nodeset.clear();
 		instances_number_test = Integer.parseInt(constants.get(0).toString());
@@ -73,6 +74,7 @@ public class IsolationForests extends Algo<IFNode>{
 		for(int i=0; i<dataset.numInstances(); i++){
 			Instance currentInstance = dataset.get(i);
 			IFNode node = new IFNode(currentInstance);
+//			node.setTimestamp(dataset.get(i).toString());
 			nodeset.add(node);
 		}
 		

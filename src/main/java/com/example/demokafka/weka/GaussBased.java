@@ -10,6 +10,7 @@ import com.example.demokafka.weka.utils.MeasureCalculator;
 import weka.core.Instance;
 import weka.core.Instances;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -49,7 +50,7 @@ public class GaussBased extends Algo<GAUNode>{
 //		return nodes;
 //	}
 
-	public GaussBased(String path, ArrayList<Object> constants){
+	public GaussBased(String path, ArrayList<Object> constants) throws ParseException {
 		super(path);
 		nodeset.clear();
 		n_test = Double.parseDouble(constants.get(0).toString());

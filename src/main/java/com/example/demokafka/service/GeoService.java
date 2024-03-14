@@ -16,33 +16,11 @@ import java.util.List;
 public class GeoService {
     @Autowired
     private final JdbcTemplate jdbcTemplateClick;
-//    @Autowired
-//    private PostgreRepository postgreRepository;
-//    private ClickhouseRepository clickhouseRepository;
-//    public GeoService(PostgreRepository postgreRepository, JdbcTemplate jdbcTemplateClick) {
-//        this.postgreRepository = postgreRepository;
-////        this.clickhouseRepository = clickhouseRepository;
-//        this.jdbcTemplateClick = jdbcTemplateClick;
-//
-//    }
+
     public GeoService(JdbcTemplate jdbcTemplateClick) {
-//        this.clickhouseRepository = clickhouseRepository;
         this.jdbcTemplateClick = jdbcTemplateClick;
 
     }
-
-//    public void save(GeoData data){
-//        postgreRepository.save(data);
-//    }
-//
-//
-//    public Iterable<GeoData> getGeoData(){
-//        return postgreRepository.findAll();
-//    }
-//
-//    public GeoData getGeoDataById(int id){
-//        return postgreRepository.findGeoDataByUserId(id);
-//    }
 
     public void saveClick(GeoData data){
         String sql = "INSERT INTO points(id, date, longitude, latitude) values(?, ?, ?, ?)";
@@ -88,12 +66,5 @@ public class GeoService {
         jdbcTemplateClick.update(sql, id);
 
     }
-//    public void saveClick(GeoDataClick data){
-//        clickhouseRepository.save(data);
-//    }
 
-//    public void deleteById(int id){
-//        clickhouseRepository.deleteById(id);
-//
-//    }
 }

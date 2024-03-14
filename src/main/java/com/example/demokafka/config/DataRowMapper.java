@@ -1,7 +1,5 @@
 package com.example.demokafka.config;
 
-
-
 import com.example.demokafka.model.GeoData;
 import org.springframework.jdbc.core.RowMapper;
 

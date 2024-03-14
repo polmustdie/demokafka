@@ -3,10 +3,7 @@ package com.example.demokafka.kafka;
 import com.example.demokafka.model.*;
 import com.example.demokafka.repository.PostgreRepository;
 import com.example.demokafka.service.*;
-import com.example.demokafka.weka.Algo;
-import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +14,6 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.StringDeserializer;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
@@ -62,7 +58,6 @@ public class KafkaReader {
     }
 
     public void processing() {
-        KafkaWriter kafkaWriter = new KafkaWriter(props);
         GeoData geoDataFromKafka;
         try {
             consumer.subscribe(Collections.singleton(props.getTopic()));
@@ -77,10 +72,8 @@ public class KafkaReader {
                         log.info("Message {} read from topic {}", consumerRecord.value(), props.getTopic());
                         geoService.saveClick(geoDataFromKafka);
                         log.info("Successfully added point {} to points clickhouse table", geoDataFromKafka);
-//                        kafkaWriter.processing(consumerRecord.value());
                     }
                 }
-
             }
         } catch (Exception e) {
             log.info("Exception caught at kafkaReader processing");
@@ -124,7 +117,6 @@ public class KafkaReader {
                         values.add(batchData);
                     } catch (ParseException e) {
                         e.printStackTrace();
-//                    throw new RuntimeException(e);
                     }
                 }
                 BatchInfoAndData batch = new BatchInfoAndData(constants, values);
@@ -165,54 +157,7 @@ public class KafkaReader {
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-
             }
         }
-
-
     }
-
-
-
-//
-//    public void processing(ArrayList<Object> constants, int mode) {
-//        KafkaWriter kafkaWriter = new KafkaWriter(props);
-//        BatchGeoData data;
-//        map = new HashMap();
-//        List<BatchGeoData> nodes = null;
-//        consumer.subscribe(Collections.singleton(props.getTopic()));
-//        ConsumerRecords<String, String> records;
-//        int j = 1;
-//        while (true) {
-//            while (!Thread.interrupted()) {
-//                records = consumer.poll(Duration.ofMillis(100));
-//                if (!records.isEmpty()) {
-//                    for (ConsumerRecord<String, String> consumerRecord : records) {
-//                        log.info("Message {} read from topic {}", consumerRecord.value(), props.getTopic());
-//                        try {
-//                            data = mapper.readValue(consumerRecord.value(), BatchGeoData.class);
-//                            if (map.size() >= 15) {
-//                                Collection<BatchGeoData> values = map.values();
-//
-//                                BatchInfoAndData batch = new BatchInfoAndData(constants, values);
-//                                nodes = dbscanService.analyze(batch);
-//                                map.clear();
-//                                for (int i = 0; i < nodes.size(); i++) {
-//                                    System.out.println(nodes.get(i));
-//                                }
-//                            } else {
-//                                map.put(j, data);
-//                                j = j+1;
-//                            }
-//                        }
-//                        catch (JsonProcessingException ex) {
-//                            System.out.println("JsonProcessingException caught" + ex.getMessage());
-//                        }
-//                    }
-//                }
-//
-//            }
-//        }
-//
-//    }
 }

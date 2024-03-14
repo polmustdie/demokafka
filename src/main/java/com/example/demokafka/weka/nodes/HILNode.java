@@ -31,12 +31,10 @@ public class HILNode extends WekaNode {
         return distance;
     }
 
-
     public void setNeighbor(HILNode node) {
         if (KNeighbors.size() < HilOut.k_test)
             KNeighbors.add(node);
     }
-
 
     public void setWeight() {
         for (HILNode nodes : KNeighbors) {
@@ -44,11 +42,7 @@ public class HILNode extends WekaNode {
         }
     }
 
-
     public double getWeight() {
         return weight;
     }
-
-
-
 }

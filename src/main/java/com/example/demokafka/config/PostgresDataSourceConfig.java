@@ -1,6 +1,5 @@
 package com.example.demokafka.config;
 
-
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -46,5 +45,4 @@ public class PostgresDataSourceConfig {
         return new JpaTransactionManager(entityManagerFactory);
     }
 
-//{"userId":6767, "date":"string modified", "latitude":0.08, "longitude": 9.89}
 }

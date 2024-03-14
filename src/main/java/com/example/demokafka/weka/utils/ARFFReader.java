@@ -20,12 +20,6 @@ public class ARFFReader {
 
 			dataset = DataSource.read(path);
 			dataset.setClassIndex(dataset.numAttributes()-1);
-			
-			// attribute-value normalization operation
-
-//			Normalize nm = new Normalize();
-//			nm.setInputFormat(dataset);
-//			dataset = Filter.useFilter(dataset, nm);
 
 		} catch (Exception e) {
 			System.out.println("Loading files error!");
@@ -53,18 +47,10 @@ public class ARFFReader {
 		try {
 			dataset = DataSource.read(path);
 
-//			Normalize nm = new Normalize();
-//			nm.setInputFormat(dataset);
-//			dataset = Filter.useFilter(dataset, nm);
-
 		} catch (Exception e) {
 			System.out.println("Loading files error!");
 			e.printStackTrace();
 		}
-//		for(Instance ins: dataset){
-//			String label = ins.stringValue(dataset.classAttribute());
-//			labels.add(label);
-//		}
 		
 		try{
 			setMu();

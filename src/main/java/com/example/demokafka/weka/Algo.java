@@ -1,7 +1,5 @@
 package com.example.demokafka.weka;
 
-
-
 import com.example.demokafka.model.BatchGeoData;
 import com.example.demokafka.weka.nodes.WekaNode;
 import com.example.demokafka.weka.utils.ARFFReader;
@@ -89,13 +87,12 @@ public class Algo<T extends WekaNode> {
                 data.setY(nodeset.get(i).getLsAttr().get(2));
                 data.setDate(nodeset.get(i).getDate());
                 data.setFlag("");
-//			outliers.add(nodeset.get(i).getAttr());
                 outliers.add(data);
                 data.setFlag(String.valueOf(nodeset.get(i).isOutlier()));
                 nodes.add(data);
             }
-
         }
+
         for (int i = 0; i < nodeset.size(); i++) {
             if (!nodeset.get(i).isOutlier()) {
                 data = new BatchGeoData();
@@ -107,8 +104,6 @@ public class Algo<T extends WekaNode> {
                 data.setFlag(String.valueOf(nodeset.get(i).isOutlier()));
                 nodes.add(data);
             }
-
-//				normals.add(nodeset.get(i).getAttr());
         }
     }
 

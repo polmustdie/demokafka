@@ -18,15 +18,5 @@ public class IFNode extends WekaNode {
     public void setScore(double s) {
         this.score = s;
     }
-    public void setTimestamp(String s){
-        this.timestamp = s;
-    }
 
-    public String getTimestamp(){
-        return this.timestamp;
-    }
-
-    public double getScore() {
-        return this.score;
-    }
 }

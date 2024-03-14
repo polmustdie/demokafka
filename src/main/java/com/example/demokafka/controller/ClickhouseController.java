@@ -1,12 +1,10 @@
 package com.example.demokafka.controller;
 
-
 import com.example.demokafka.model.GeoData;
 import com.example.demokafka.service.GeoService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
 
 @RestController
 @RequestMapping("/click")

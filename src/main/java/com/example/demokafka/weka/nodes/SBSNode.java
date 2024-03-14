@@ -15,8 +15,4 @@ public class SBSNode extends WekaNode {
     public void setClusterIndex(double clusterIndex) {
         this.clusterIndex = clusterIndex;
     }
-
-    public double getClusterIndex() {
-        return this.clusterIndex;
-    }
 }

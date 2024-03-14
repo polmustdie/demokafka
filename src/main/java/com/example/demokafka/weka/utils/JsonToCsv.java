@@ -8,7 +8,6 @@ import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 
 import java.io.File;
 import java.io.IOException;
-//"src/main/resources/data.json"
 public class JsonToCsv {
     private JsonToCsv() {
         throw new IllegalStateException("Utility class");
@@ -17,7 +16,6 @@ public class JsonToCsv {
     public static void createCsv(String path) throws IOException {
 
         JsonNode jsonNode = new ObjectMapper().readTree(new File(path));
-//        JsonNode data = jsonNode.get("data");
 
         CsvSchema.Builder builder = CsvSchema.builder()
                 .addColumn("date")

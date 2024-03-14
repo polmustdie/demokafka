@@ -1,9 +1,7 @@
 package com.example.demokafka.kafka;
 
 
-import com.example.demokafka.model.GeoData;
 import com.example.demokafka.model.KafkaProperties;
-import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.KafkaProducer;

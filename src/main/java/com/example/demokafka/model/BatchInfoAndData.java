@@ -14,10 +14,6 @@ import java.util.Collection;
 @AllArgsConstructor
 public class BatchInfoAndData {
     private ArrayList<Object> constants;
-//    private int mode;
     private Collection<BatchGeoData> data;
 
-//    public int getMode() {
-//        return mode;
-//    }
 }

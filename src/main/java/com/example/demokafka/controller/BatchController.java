@@ -3,7 +3,6 @@ package com.example.demokafka.controller;
 import com.example.demokafka.model.BatchGeoData;
 import com.example.demokafka.model.BatchInfoAndData;
 import com.example.demokafka.service.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping(path = "/batch")
 public class BatchController {
-    ObjectMapper mapper;
     @Autowired
     BatchHilOutService batchHilOutService;
     @Autowired

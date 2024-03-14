@@ -1,7 +1,5 @@
 package com.example.demokafka.weka.utils;
 
-//import org.example.nodes.WekaNode;
-
 import com.example.demokafka.weka.nodes.WekaNode;
 
 import java.util.List;

@@ -1,13 +1,8 @@
 package com.example.demokafka.weka;
 
-//import org.example.nodes.IFNode;
-import com.example.demokafka.model.BatchGeoData;
 import com.example.demokafka.weka.nodes.IFNode;
-import com.example.demokafka.weka.utils.ARFFReader;
-import com.example.demokafka.weka.utils.MeasureCalculator;
 import weka.classifiers.misc.IsolationForest;
 import weka.core.Instance;
-import weka.core.Instances;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -24,7 +19,6 @@ import java.util.List;
  */
 public class IsolationForests extends Algo<IFNode>{
 	
-//	private static Instances dataset;
 	//number of instances in itree
 	public static final int INSTANCES_NUMBER = 30;
 	public static  int instances_number_test;
@@ -35,31 +29,11 @@ public class IsolationForests extends Algo<IFNode>{
 	// threshold
 	public static final double S_THRESHOLD = 0.5;
 	public static  double s_threshold_test;
-
-
-
-
 	private static List<IFNode> nodeset = new ArrayList<>();
 
 	public List<IFNode> getNodeset() {
 		return nodeset;
 	}
-
-//	private ArrayList<BatchGeoData> outliers = new ArrayList<>();
-//	private ArrayList<BatchGeoData> normals = new ArrayList<>();
-//	private ArrayList<BatchGeoData> nodeset = new ArrayList<>();
-
-//	public List<BatchGeoData> getOutliers() {
-//		return outliers;
-//	}
-//
-//	public List<BatchGeoData> getNormals() {
-//		return normals;
-//	}
-//
-//	public List<BatchGeoData> getNodeset() {
-//		return nodeset;
-//	}
 	
 	public IsolationForests(String path, ArrayList<Object> constants) throws ParseException {
 		super(path);
@@ -67,14 +41,10 @@ public class IsolationForests extends Algo<IFNode>{
 		instances_number_test = Integer.parseInt(constants.get(0).toString());
 		trees_number_test = Integer.parseInt(constants.get(1).toString());
 		s_threshold_test = Double.parseDouble(constants.get(2).toString());
-//
-//		ARFFReader reader = new ARFFReader(path);
-//		dataset = reader.getDataset();
 		
 		for(int i=0; i<dataset.numInstances(); i++){
 			Instance currentInstance = dataset.get(i);
 			IFNode node = new IFNode(currentInstance);
-//			node.setTimestamp(dataset.get(i).toString());
 			nodeset.add(node);
 		}
 		
@@ -86,37 +56,6 @@ public class IsolationForests extends Algo<IFNode>{
 		}
 
 	}
-//	private void showArraysInfo() {
-//		BatchGeoData data;
-//		for(int i=0; i<nodes.size(); i++){
-//
-//			if(nodes.get(i).isOutlier()) {
-//				data = new BatchGeoData();
-//				data.setX(nodes.get(i).getAttr().get(0));
-//				data.setY(nodes.get(i).getAttr().get(1));
-//				data.setFlag("");
-////			outliers.add(nodeset.get(i).getAttr());
-//				outliers.add(data);
-//				data.setFlag(String.valueOf(nodes.get(i).isOutlier()));
-//				nodeset.add(data);
-//			}
-//
-//		}
-//		for(int i=0; i<nodes.size(); i++){
-//			if(!nodes.get(i).isOutlier()) {
-//				data = new BatchGeoData();
-//				data.setX(nodes.get(i).getAttr().get(0));
-//				data.setY(nodes.get(i).getAttr().get(1));
-//				data.setFlag("");
-//				normals.add(data);
-//				data.setFlag(String.valueOf(nodes.get(i).isOutlier()));
-//				nodeset.add(data);
-//			}
-//
-////				normals.add(nodeset.get(i).getAttr());
-//		}
-//
-//	}
 	
 	public void setAnomalyScore() throws Exception{
 		
@@ -132,53 +71,7 @@ public class IsolationForests extends Algo<IFNode>{
 				nodeset.get(i).setPrelabel("outlier");
 			}
 		}
-		
 	}
-
-//	public void showResults(){
-//
-//		System.out.println("\nExperiments Results of <" + dataset.relationName() + "> By Using Isolation Forest Outlier Detection Method.");
-//		System.out.println("\n---------------- Detected Outliers ------------------\n");
-//		for(int i = 0; i< nodes.size(); i++){
-//			if(nodes.get(i).isOutlier()){
-//				System.out.println(i + " " + nodes.get(i).getScore() + ", Label: " + nodes.get(i).getLabel()+" x y " + nodes.get(i).getAttr());
-//			}
-//		}
-//		System.out.println("\n---------------- Detected Normals ------------------\n");
-//		for(int i = 0; i< nodes.size(); i++){
-//			if(!nodes.get(i).isOutlier()){
-//				System.out.println(i + " " + nodes.get(i).getScore() + ", Label: " + nodes.get(i).getLabel()+" x y " + nodes.get(i).getAttr());
-//			}
-//		}
-//		System.out.println("----------------------------------");
-//
-//		MeasureCalculator mc = new MeasureCalculator(nodes);
-//
-//		System.out.println("TP:" + mc.getTP());
-//		System.out.println("TN:" + mc.getTN());
-//		System.out.println("FP:" + mc.getFP());
-//		System.out.println("FN:" + mc.getFN());
-//
-////		System.out.println("PRECISION:" + mc.getPRECISION());
-////		System.out.println("RECALL:" + mc.getRECALL());
-////		System.out.println("F-MEASURE:" + mc.getFMEASURE());
-////		System.out.println("ACCURACY:" + mc.getCORRECTRATIO());
-//
-//		System.out.println("Detection Rate: " + mc.getDetectRate());
-//		System.out.println("FP Rate       : " + mc.getFPRate());
-//
-//	}
-//
-//	public double getDetectionRate(){
-//		MeasureCalculator mc = new MeasureCalculator(nodes);
-//		return mc.getDetectRate();
-//	}
-//
-//	public double getFPRate(){
-//		MeasureCalculator mc = new MeasureCalculator(nodes);
-//		return mc.getFPRate();
-//	}
-//
 	
 }
 

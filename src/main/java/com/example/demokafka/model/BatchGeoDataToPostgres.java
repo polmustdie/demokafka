@@ -19,21 +19,18 @@ import java.util.Date;
 @Entity
 @Table(name = "points_from_service")
 public class BatchGeoDataToPostgres {
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    private Date date;
-    private Double x;
-    private Double y;
-    private String flag;
     @Id
     @GeneratedValue
     private Integer id;
     private Integer pointId;
     private Integer userId;
-
-
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    private Date date;
+    private Double x;
+    private Double y;
+    private String flag;
 
     public BatchGeoDataToPostgres() {
-
     }
 
     public BatchGeoDataToPostgres(Date date, Double x, Double y, String flag, int i, int i1) {
@@ -43,14 +40,6 @@ public class BatchGeoDataToPostgres {
         this.flag = flag;
         this.pointId = i;
         this.userId = i1;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getId() {
-        return id;
     }
 }
 

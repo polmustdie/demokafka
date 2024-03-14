@@ -4,17 +4,15 @@ import weka.core.Instance;
 
 import java.text.ParseException;
 
-/***
- * <p>This class <b>LOFNode</b> is used to simulate the characteristic of each instance.</p>
- *
- */
+// is used to simulate the characteristic of each instance
+
 public class LOFNode extends WekaNode {
 
     private double lof = 0.0d; // weight value
 
-    /**
-     * To initialize the instance with features and class label
-     */
+
+     //To initialize the instance with features and class label
+
     public LOFNode(Instance instance) throws ParseException {
         super(instance);
     }

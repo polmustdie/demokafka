@@ -1,6 +1,5 @@
 package com.example.demokafka.weka.comparators;
 
-//import org.example.nodes.GAUNode;
 
 import com.example.demokafka.weka.nodes.GAUNode;
 

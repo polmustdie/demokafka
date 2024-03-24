@@ -8,9 +8,9 @@ import java.util.Comparator;
 public class LOFComparator implements Comparator<LOFNode> {
 
     public int compare(LOFNode o1, LOFNode o2) {
-        if (o1.getLOF() > o2.getLOF()) {
+        if (o1.getLof() > o2.getLof()) {
             return -1;
-        } else if (o1.getLOF() < o2.getLOF()) {
+        } else if (o1.getLof() < o2.getLof()) {
             return 1;
         } else {
             return 0;

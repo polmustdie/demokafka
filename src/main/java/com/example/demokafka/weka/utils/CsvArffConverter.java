@@ -32,6 +32,7 @@ public class CsvArffConverter
             }
             List<String> lines = Files.readAllLines(Path.of(destpath), StandardCharsets.UTF_8);
             lines.set(2, "@attribute date date \"yyyy-MM-dd HH:mm:ss\"");
+//            lines.set(7, "@attribute flag {ok,no}");
             Files.write(Path.of(destpath), lines, StandardCharsets.UTF_8);
         }
 

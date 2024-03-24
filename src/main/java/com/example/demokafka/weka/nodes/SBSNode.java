@@ -1,9 +1,13 @@
 package com.example.demokafka.weka.nodes;
 
+import lombok.Getter;
+import lombok.Setter;
 import weka.core.Instance;
 
 import java.text.ParseException;
 
+@Setter
+@Getter
 public class SBSNode extends WekaNode {
 
     private double clusterIndex = -1.0d; // cluster index
@@ -12,7 +16,7 @@ public class SBSNode extends WekaNode {
         super(instance);
     }
 
-    public void setClusterIndex(double clusterIndex) {
-        this.clusterIndex = clusterIndex;
-    }
+//    public void setClusterIndex(double clusterIndex) {
+//        this.clusterIndex = clusterIndex;
+//    }
 }

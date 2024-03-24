@@ -6,6 +6,7 @@ import com.example.demokafka.weka.utils.JsonToCsv;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.util.Collection;
 
 @Service
+@Slf4j
 public class JsonToArffService {
     @Value("${json.path}")
     private String jsonPath;
@@ -34,7 +36,7 @@ public class JsonToArffService {
             CsvArffConverter.convertCsvToArff("src/main/resources/dataFromCsv.csv", "src/main/resources/static/dataArff.arff");
         }
         catch (IOException e){
-            System.out.println("Caught IOException in converting");
+            log.error(e.getMessage());
             e.printStackTrace();
         }
         return "src/main/resources/static/dataArff.arff";

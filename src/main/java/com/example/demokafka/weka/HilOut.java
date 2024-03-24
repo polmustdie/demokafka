@@ -3,6 +3,8 @@ package com.example.demokafka.weka;
 import com.example.demokafka.weka.comparators.WeightComparator;
 import com.example.demokafka.weka.nodes.HILNode;
 import com.example.demokafka.weka.utils.DistanceCalculator;
+import lombok.Getter;
+
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,14 +18,15 @@ import java.util.List;
   3. counting the weight of each point.
   4. ranking the points in terms of weights, the top-N points are detected as outliers.
  */
+@Getter
 public class HilOut extends Algo<HILNode>{
-	public static final int K = 5;
-	public static  int k_test;
+//	private static final int K = 5;
+	public static int k_test;
 	// top n outliers
-	public static final double N = 0.5;
-	public static  double n_test;
-	private static final  List<HILNode> nodeset = new ArrayList<>();
-	private static final List<double[]> lsDistance = new ArrayList<>();
+//	private static final double N = 0.5;
+	private final double n_test;
+	private final List<HILNode> nodeset = new ArrayList<>();
+	private final List<double[]> lsDistance = new ArrayList<>();
 
 	public HilOut(String path, ArrayList<Object> constants) throws ParseException {
 		super(path);
@@ -37,17 +40,12 @@ public class HilOut extends Algo<HILNode>{
 			HILNode node = new HILNode(dataset.get(i));
 			nodeset.add(node);
 		}
-		
-		calculateKNeighbors();
-		
-		rankingByWeights();
 
+		calculateKNeighbors();
+		rankingByWeights();
 		showArraysInfo(nodeset);
 	}
 
-	public List<HILNode> getNodeset() {
-		return nodeset;
-	}
 
 	private void calculateKNeighbors(){
 		int size = nodeset.size();

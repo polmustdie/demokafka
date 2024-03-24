@@ -2,16 +2,17 @@ package com.example.demokafka.weka.nodes;
 
 import com.example.demokafka.weka.HilOut;
 import com.example.demokafka.weka.utils.DistanceCalculator;
+import lombok.Getter;
 import weka.core.Instance;
 
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-
+@Getter
 public class HILNode extends WekaNode {
 
-    private List<HILNode> KNeighbors = new ArrayList<>(); // k-nearest neighbors
+    private final List<HILNode> KNeighbors = new ArrayList<>(); // k-nearest neighbors
 
     private double weight = 0.0d; // weight value
 
@@ -42,7 +43,7 @@ public class HILNode extends WekaNode {
         }
     }
 
-    public double getWeight() {
-        return weight;
-    }
+//    public double getWeight() {
+//        return weight;
+//    }
 }

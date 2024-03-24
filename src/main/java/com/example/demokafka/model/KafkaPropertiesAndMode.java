@@ -12,6 +12,7 @@ import java.util.ArrayList;
 public class KafkaPropertiesAndMode {
     private KafkaProperties properties;
     private int mode;
+    private int windowSize;
     private ArrayList<Object> constants;
 }
 

@@ -1,6 +1,8 @@
 package com.example.demokafka.weka;
 
 import com.example.demokafka.weka.nodes.SBSNode;
+import lombok.Data;
+import lombok.Getter;
 import weka.clusterers.ClusterEvaluation;
 import weka.clusterers.DBSCAN;
 import weka.core.Instance;
@@ -10,18 +12,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 // dbscan - clustering algo
+@Getter
 public class DBSCANs extends Algo<SBSNode>{
 	// Epsilon in DBSCAN>??????????????????
-	public static final double EPS = 0.2;
-	public static  double eps_test;
+//	private static final double EPS = 0.2;
+	private final double eps_test;
 
-	public static final int MIN_POINTS = 5;
-	public static int min_points_test;
-	private static List<SBSNode> nodeset = new ArrayList<>();
-
-	public List<SBSNode> getNodeset() {
-		return nodeset;
-	}
+//	private static final int MIN_POINTS = 5;
+	private final int min_points_test;
+	private final List<SBSNode> nodeset = new ArrayList<>();
 
 	public DBSCANs(String path, ArrayList<Object> constants) throws ParseException {
 		super(path, true);
@@ -29,17 +28,17 @@ public class DBSCANs extends Algo<SBSNode>{
 		min_points_test = Integer.parseInt(constants.get(1).toString());
 
 		nodeset.clear();
+		datasetForDBSCAN.deleteAttributeAt(1);
+		datasetForDBSCAN.deleteAttributeAt(1);
 		for(int i=0; i<dataset.numInstances(); i++){
 			Instance currentInstance = dataset.get(i);
 			SBSNode node = new SBSNode(currentInstance);
 			nodeset.add(node);
 		}
-		
 		try {
 			clusteringByDBSCAN();
 			showArraysInfo(nodeset);
 		} catch (Exception e) {
-			
 			e.printStackTrace();
 		}
 	}
@@ -49,21 +48,20 @@ public class DBSCANs extends Algo<SBSNode>{
 		DBSCAN dbscan = new DBSCAN();
 		dbscan.setEpsilon(eps_test);
 		dbscan.setMinPoints(min_points_test);
-		
-		dbscan.buildClusterer(dataset);
+		dbscan.buildClusterer(datasetForDBSCAN);
 		ClusterEvaluation eval = new ClusterEvaluation();
 		eval.setClusterer(dbscan);
-		eval.evaluateClusterer(dataset);
+		eval.evaluateClusterer(datasetForDBSCAN);
 		double[] num = eval.getClusterAssignments();
-
-		for(int i=0; i<nodeset.size(); i++){
-			SBSNode currentNode = nodeset.get(i);
-			currentNode.setClusterIndex(num[i]);
-			if(num[i] < 0){
-				currentNode.setPrelabel("outlier");
+		if (dbscan.numberOfClusters() != 0){
+			for(int i=0; i<nodeset.size(); i++){
+				SBSNode currentNode = nodeset.get(i);
+				currentNode.setClusterIndex(num[i]);
+				if(num[i] < 0){
+					currentNode.setPrelabel("outlier");
+				}
 			}
 		}
-		
 	}
 }
 

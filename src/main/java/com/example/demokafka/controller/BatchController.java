@@ -15,15 +15,15 @@ import java.util.List;
 @RequestMapping(path = "/batch")
 public class BatchController {
     @Autowired
-    BatchHilOutService batchHilOutService;
+    private BatchHilOutService batchHilOutService;
     @Autowired
-    BatchDBSCANService batchDBSCANService;
+    private BatchDBSCANService batchDBSCANService;
     @Autowired
-    BatchGaussBasedService batchGaussBasedService;
+    private BatchGaussBasedService batchGaussBasedService;
     @Autowired
-    BatchIsolationForestService batchIsolationForestService;
+    private BatchIsolationForestService batchIsolationForestService;
     @Autowired
-    BatchLOFService batchLOFService;
+    private BatchLOFService batchLOFService;
 
     @PostMapping("/HilOut")
     public List<BatchGeoData> analyzeHilOut(@RequestBody BatchInfoAndData batch) throws Exception {

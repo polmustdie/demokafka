@@ -10,7 +10,7 @@ import java.util.List;
 
 @Service
 public abstract class BatchAlgoService {
-    JsonToArffService jsonToArffService = new JsonToArffService();
+    protected JsonToArffService jsonToArffService = new JsonToArffService();
 
     public abstract List<BatchGeoData> analyze(BatchInfoAndData batchGeoData) throws ParseException;
 }

@@ -28,6 +28,12 @@ public class GeoService {
                 data.getUserId(), data.getDate(), data.getLongitude(), data.getLatitude());
     }
 
+    public void saveClickGeo(GeoDataFlag data){
+        String sql = "INSERT INTO geo_points(id, user_id, timestamp, latitude, longitude, new, flag) values(?, ?, ?, ?, ?,?,?)";
+        jdbcTemplateClick.update(sql,
+                data.getId(), data.getUserId(), data.getTimestamp(), data.getLatitude(), data.getLongitude(), data.getIsNew(), data.getFlag());
+    }
+
     public List<GeoData> getGeoDataClick() {
         String sql = "SELECT * FROM points";
 

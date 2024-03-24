@@ -2,6 +2,7 @@ package com.example.demokafka.weka;
 
 import com.example.demokafka.weka.comparators.LOFComparator;
 import com.example.demokafka.weka.nodes.LOFNode;
+import lombok.Getter;
 import weka.core.EuclideanDistance;
 import weka.core.Instance;
 import weka.core.neighboursearch.LinearNNSearch;
@@ -20,22 +21,20 @@ import java.util.List;
  4. Get local reach-ability density of each instance.
  5. Get LOF factor of each instance, the top-N instances with high LOF are detected as outliers.
  */
+@Getter
 public class LocalOutlierFactor extends Algo<LOFNode>{
-	ArrayList<LOFNode> values = new ArrayList<>();
 	// n outliers
-	public static final double N = 0.15;
-	public static double n_test;
+//	private static final double N = 0.15;
+	private final double n_test;
 	// lower bound used to be 20
-	public static final String LOWER_BOUND = "5";
-	public static String lower_bound_test;
+//	private static final String LOWER_BOUND = "5";
+	private final String lower_bound_test;
 	// upper bound used to be 30
-	public static final String UPPER_BOUND = "10";
-	public static String upper_bound_test;
+//	private static final String UPPER_BOUND = "10";
+	private final String upper_bound_test;
+	private final List<LOFNode> nodeset = new ArrayList<>();
+	private final ArrayList<LOFNode> values = new ArrayList<>();
 
-	private static List<LOFNode> nodeset = new ArrayList<>();
-	public List<LOFNode> getNodeset() {
-		return nodeset;
-	}
 
 	public LocalOutlierFactor(String path, ArrayList<Object> constants) throws ParseException {
 
@@ -44,9 +43,7 @@ public class LocalOutlierFactor extends Algo<LOFNode>{
 		n_test = Double.parseDouble(constants.get(0).toString());
 		lower_bound_test = constants.get(1).toString();
 		upper_bound_test = constants.get(2).toString();
-//
-//		ARFFReader reader = new ARFFReader(path);
-//		dataset = reader.getDataset();
+
 		for(int i=0; i<dataset.numInstances(); i++){
 			Instance currentInstance = dataset.get(i);
 			LOFNode node = new LOFNode(currentInstance);
@@ -57,9 +54,7 @@ public class LocalOutlierFactor extends Algo<LOFNode>{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 		rankingByLOF();
-
 		showArraysInfo(nodeset);
 		
 	}
@@ -68,8 +63,7 @@ public class LocalOutlierFactor extends Algo<LOFNode>{
 
 		LOF lof = new LOF();
 		lof.setMinPointsLowerBound(lower_bound_test);
-//		lof.setMinPointsUpperBound(String.valueOf(nodeset.size() - 2));
-		lof.setMinPointsUpperBound(upper_bound_test);
+		lof.setMinPointsUpperBound(String.valueOf(nodeset.size() - 2));
 		LinearNNSearch searcher = new LinearNNSearch();
 //		searcher.setDistanceFunction(new ManhattanDistance());
 		searcher.setDistanceFunction(new EuclideanDistance());
@@ -78,9 +72,7 @@ public class LocalOutlierFactor extends Algo<LOFNode>{
 		dataset = Filter.useFilter(dataset, lof);
 		
 		for(int i = 0; i< nodeset.size(); i++){
-			
-			nodeset.get(i).setLOF(dataset.get(i).value(dataset.numAttributes()-1));
-			
+			nodeset.get(i).setLof(dataset.get(i).value(dataset.numAttributes()-1));
 		}
 	}
 	

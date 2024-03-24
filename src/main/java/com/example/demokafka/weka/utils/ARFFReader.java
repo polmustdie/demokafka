@@ -1,5 +1,6 @@
 package com.example.demokafka.weka.utils;
 
+import lombok.Getter;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
@@ -7,6 +8,7 @@ import weka.core.converters.ConverterUtils.DataSource;
 import java.util.HashSet;
 import java.util.Set;
 
+@Getter
 public class ARFFReader {
 
 	private Instances dataset;
@@ -62,9 +64,9 @@ public class ARFFReader {
 		
 	}
 	
-	public Instances getDataset(){
-		return dataset;
-	}
+//	public Instances getDataset(){
+//		return dataset;
+//	}
 	
 	public void setMu(){
 		int attrNum = this.dataset.numAttributes();
@@ -82,9 +84,9 @@ public class ARFFReader {
 		this.mu = mus;
 	}
 	
-	public double[] getMu(){
-		return this.mu;
-	}
+//	public double[] getMu(){
+//		return this.mu;
+//	}
 	
 	// std for each attribute
 	public void setStd(){
@@ -104,9 +106,9 @@ public class ARFFReader {
 		
 	}
 	
-	public double[] getStd(){
-		return this.std;
-	}
+//	public double[] getStd(){
+//		return this.std;
+//	}
 	
 	public void showDataset(){
 		System.out.println("----------   Dataset Basic Information   ----------");

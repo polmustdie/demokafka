@@ -4,6 +4,7 @@ package com.example.demokafka.weka;
 import com.example.demokafka.weka.comparators.ProbabilityComparator;
 import com.example.demokafka.weka.nodes.GAUNode;
 import com.example.demokafka.weka.utils.ARFFReader;
+import lombok.Getter;
 import weka.core.Instance;
 
 import java.text.ParseException;
@@ -23,14 +24,12 @@ import java.util.List;
 
   p(x) = 1/(sqrt(2&pi;)*sigma;j) * exp((-1)*(xj-&mu;j)^2/(2*&sigma;^2))
  */
+@Getter
 public class GaussBased extends Algo<GAUNode> {
 	//top n outliers
-	public static final double N = 0.1;
-	public static double n_test;
-//	public static double threshold = 1.0E-07;
-
-	private static List<GAUNode> nodeset = new ArrayList<>();
-
+//	private static final double N = 0.1;
+	private final double n_test;
+	private List<GAUNode> nodeset = new ArrayList<>();
 
 	public GaussBased(String path, ArrayList<Object> constants) throws ParseException {
 		super(path);
@@ -44,7 +43,6 @@ public class GaussBased extends Algo<GAUNode> {
 		}
 
 		calculateProbability(path);
-
 		rankingByProbability();
 		showArraysInfo(nodeset);
 	}
@@ -72,11 +70,6 @@ public class GaussBased extends Algo<GAUNode> {
 			nodeset.get(i).setProbability(pi);
 		}
 	}
-
-	public List<GAUNode> getNodeset() {
-		return nodeset;
-	}
-
 
 	private void rankingByProbability() {
 		Collections.sort(nodeset, new ProbabilityComparator());

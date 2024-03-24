@@ -1,10 +1,13 @@
 package com.example.demokafka.weka.nodes;
 
+import lombok.Getter;
+import lombok.Setter;
 import weka.core.Instance;
 
 import java.text.ParseException;
 
-
+@Setter
+@Getter
 public class IFNode extends WekaNode {
     private String timestamp;
 
@@ -15,8 +18,8 @@ public class IFNode extends WekaNode {
         super(instance);
     }
 
-    public void setScore(double s) {
-        this.score = s;
-    }
+//    public void setScore(double s) {
+//        this.score = s;
+//    }
 
 }

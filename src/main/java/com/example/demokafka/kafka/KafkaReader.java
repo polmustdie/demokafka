@@ -1,5 +1,6 @@
 package com.example.demokafka.kafka;
 
+import com.example.demokafka.config.ApplicationProperties;
 import com.example.demokafka.model.*;
 import com.example.demokafka.repository.PostgreRepository;
 import com.example.demokafka.service.*;
@@ -28,21 +29,23 @@ import java.util.*;
 @RequiredArgsConstructor
 @Service
 public class KafkaReader {
+    private ApplicationProperties applicationProperties;
     private KafkaProperties props;
     private String subscribeString;
     private Properties properties;
     private KafkaConsumer<String, String> consumer;
-    ObjectMapper mapper = new ObjectMapper();
+    private ObjectMapper mapper = new ObjectMapper();
     private HashMap<Integer, BatchGeoData> map;
-    GeoService geoService;
-    List<GeoDataFlag> data = new ArrayList<>();
-    ArrayList<Object> constants;
-    int mode;
+    private GeoService geoService;
+    private List<GeoDataFlag> data = new ArrayList<>();
+    private ArrayList<Object> constants;
+    private int mode;
+    private int windowSize;
     private KafkaWriter kafkaWriter;
     private PostgreRepository postgreRepository;
 
     public KafkaReader(KafkaProperties props, GeoService geoService, KafkaPropertiesAndMode propertiesAndMode,
-                       PostgreRepository postgreRepository) {
+                       PostgreRepository postgreRepository, ApplicationProperties applicationProperties) {
         this.props = props;
         properties = new Properties();
         properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, props.getBootstrapServers());
@@ -54,11 +57,14 @@ public class KafkaReader {
         this.geoService = geoService;
         this.constants = propertiesAndMode.getConstants();
         this.mode = propertiesAndMode.getMode();
+        this.windowSize = propertiesAndMode.getWindowSize();
         this.postgreRepository = postgreRepository;
+        kafkaWriter = new KafkaWriter(props);
+        this.applicationProperties = applicationProperties;
     }
 
     public void processing() {
-        GeoData geoDataFromKafka;
+        GeoDataFlag geoDataFlag;
         try {
             consumer.subscribe(Collections.singleton(props.getTopic()));
             ConsumerRecords<String, String> records;
@@ -67,16 +73,15 @@ public class KafkaReader {
                 if (!records.isEmpty()) {
                     for (ConsumerRecord<String, String> consumerRecord : records) {
                         ObjectMapper objectMapper = new ObjectMapper();
-                        geoDataFromKafka = objectMapper.readValue(consumerRecord.value(), GeoData.class);
-
+                        geoDataFlag = objectMapper.readValue(consumerRecord.value(), GeoDataFlag.class);
                         log.info("Message {} read from topic {}", consumerRecord.value(), props.getTopic());
-                        geoService.saveClick(geoDataFromKafka);
-                        log.info("Successfully added point {} to points clickhouse table", geoDataFromKafka);
+                        geoService.saveClickGeo(geoDataFlag);
+                        log.info("Successfully added point {} to geo_points clickhouse table", geoDataFlag);
                     }
                 }
             }
         } catch (Exception e) {
-            log.info("Exception caught at kafkaReader processing");
+            log.error(e.getMessage());
         }
     }
 
@@ -87,77 +92,62 @@ public class KafkaReader {
                 data = geoService.getGeoDataClickFlag();
             }
         };
-
         Timer timer = new Timer(true);
-
-        timer.schedule(task, 0, 1000L * 20);
-
+        timer.schedule(task, 0, 1000L * applicationProperties.getReadFromDbSeconds());
     }
 
     public void analyze() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        KafkaWriter kafkaWriter = new KafkaWriter(props);
-
         geoService.updateIsNewField(data, true);
-
         Collection<BatchGeoData> values = new ArrayList<>();
         BatchGeoData batchData;
         Date date;
         List<BatchGeoData> nodes;
         BatchAlgoService service;
         while (true) {
-
-            if (data.size()>=10) {
-                for (GeoDataFlag record : data) {
-                    log.info("Record from clickhouse db", record.toString());
+            if (data.size() >= windowSize) {
+                for (GeoDataFlag datum : data) {
                     try {
                         date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                                .parse(record.getTimestamp());
-                        batchData = new BatchGeoData(date, (double) record.getLongitude(), (double) record.getLatitude(), record.getFlag());
+                                .parse(datum.getTimestamp());
+                        batchData = new BatchGeoData(date, datum.getId (), datum.getUserId(), (double) datum.getLongitude(), (double) datum.getLatitude(), datum.getFlag());
                         values.add(batchData);
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
                 }
                 BatchInfoAndData batch = new BatchInfoAndData(constants, values);
-                switch (mode){
-                    case 1:
-                        service = new BatchDBSCANService();
-                        break;
-                    case 2:
-                        service = new BatchGaussBasedService();
-                        break;
-                    case 3:
-                        service = new BatchHilOutService();
-                        break;
-                    case 4:
-                        service = new BatchIsolationForestService();
-                        break;
-                    default:
-                        service = new BatchLOFService();
-
-                }
+                service = switch (mode) {
+                    case 1 -> new BatchDBSCANService();
+                    case 2 -> new BatchGaussBasedService();
+                    case 3 -> new BatchHilOutService();
+                    case 4 -> new BatchIsolationForestService();
+                    default -> new BatchLOFService();
+                };
                 try {
                     nodes = service.analyze(batch);
-                    System.out.println("IAKJKJBKJWNKLWJBWJLWBL");
 //                    geoService.updateIsNewField(data, false);
                     data.clear();
-
-                    for (BatchGeoData node :nodes){
-                        try {
-                            kafkaWriter.processing(mapper.writeValueAsString(node));
-                            BatchGeoDataToPostgres dataToPostgres = new BatchGeoDataToPostgres(node.getDate(), node.getX(), node.getY(),
-                                    node.getFlag(), 1, 1);
-                            postgreRepository.save(dataToPostgres);
-                        }
-                        catch (JsonProcessingException e) {
-                            e.printStackTrace();
-                        }
-                    }
+                    sendAndSaveData(nodes);
                 } catch (ParseException e) {
-                    e.printStackTrace();
+                    log.error(e.getMessage());
                 }
             }
         }
+    }
+
+    private void sendAndSaveData(List<BatchGeoData> nodes) {
+        BatchGeoDataToPostgres dataToPostgres;
+        for (BatchGeoData node : nodes){
+            try {
+                kafkaWriter.processing(mapper.writeValueAsString(node));
+                dataToPostgres = new BatchGeoDataToPostgres(node.getDate(), node.getX(), node.getY(),
+                        node.getFlag(), node.getPointId(), node.getUserId());
+                postgreRepository.save(dataToPostgres);
+            }
+            catch (JsonProcessingException e) {
+                log.error(e.getMessage());
+            }
+        }
+        log.info("Data was successfully saved to postgres");
     }
 }

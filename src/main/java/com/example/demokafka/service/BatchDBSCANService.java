@@ -16,7 +16,6 @@ public class BatchDBSCANService extends BatchAlgoService  {
         ArrayList<Object> constants = batchGeoData.getConstants();
 
         String path = jsonToArffService.convert(batchGeoData.getData());
-        System.out.println(path);
         DBSCANs gb = new DBSCANs(path, constants);
 
         gb.showResults(gb.getNodeset());

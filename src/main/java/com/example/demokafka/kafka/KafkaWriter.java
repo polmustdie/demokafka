@@ -14,8 +14,8 @@ import java.util.UUID;
 
 @Slf4j
 public class KafkaWriter{
-    KafkaProperties props;
-    KafkaProducer<String, String> kafkaProducer;
+    private KafkaProperties props;
+    private KafkaProducer<String, String> kafkaProducer;
     public KafkaWriter(KafkaProperties props) {
         this.props = props;
         kafkaProducer = new KafkaProducer<>(Map.of(

@@ -19,11 +19,11 @@ public class JsonToCsv {
 
         CsvSchema.Builder builder = CsvSchema.builder()
                 .addColumn("date")
+                .addColumn("pointId")
+                .addColumn("userId")
                 .addColumn("x")
                 .addColumn("y")
                 .addColumn("flag");
-//                .addColumn("id")
-//                .addColumn("user_id");
 
         CsvSchema csvSchema = builder.build().withHeader().withoutQuoteChar();
 

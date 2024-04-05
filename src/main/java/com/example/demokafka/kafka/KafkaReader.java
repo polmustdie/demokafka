@@ -98,11 +98,12 @@ public class KafkaReader {
 
     public void analyze() {
         geoService.updateIsNewField(data, true);
-        Collection<BatchGeoData> values = new ArrayList<>();
+        ArrayList<BatchGeoData> values = new ArrayList<>();
         BatchGeoData batchData;
         Date date;
         List<BatchGeoData> nodes;
         BatchAlgoService service;
+        // выход из цикла
         while (true) {
             if (data.size() >= windowSize) {
                 for (GeoDataFlag datum : data) {
@@ -115,6 +116,7 @@ public class KafkaReader {
                         e.printStackTrace();
                     }
                 }
+                values.sort(Comparator.comparing(BatchGeoData::getDate));
                 BatchInfoAndData batch = new BatchInfoAndData(constants, values);
                 service = switch (mode) {
                     case 1 -> new BatchDBSCANService();
@@ -125,8 +127,9 @@ public class KafkaReader {
                 };
                 try {
                     nodes = service.analyze(batch);
-//                    geoService.updateIsNewField(data, false);
+                    geoService.updateIsNewField(data, false);
                     data.clear();
+                    batch.getData().clear();
                     sendAndSaveData(nodes);
                 } catch (ParseException e) {
                     log.error(e.getMessage());

@@ -25,9 +25,18 @@ public class HILNode extends WekaNode {
     public double getDistanceToOther(HILNode node) {
         double distance;
         List<Double> attr1 = getLsAttr();
-        List<Double> attr2 = node.getLsAttr();
+        List<Double> attr1Cropped = new ArrayList<>();
+        attr1Cropped.add(attr1.get(3));
+        attr1Cropped.add(attr1.get(4));
 
-        distance = DistanceCalculator.distanceEculidean(attr1, attr2); //List<Double> ls1, List<Double> ls2
+
+        List<Double> attr2 = node.getLsAttr();
+        List<Double> attr2Cropped = new ArrayList<>();
+        attr2Cropped.add(attr2.get(3));
+        attr2Cropped.add(attr2.get(4));
+
+
+        distance = DistanceCalculator.distanceEculidean(attr1Cropped, attr2Cropped); //List<Double> ls1, List<Double> ls2
 
         return distance;
     }

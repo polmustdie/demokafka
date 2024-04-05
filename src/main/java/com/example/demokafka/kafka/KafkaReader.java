@@ -43,9 +43,10 @@ public class KafkaReader {
     private int windowSize;
     private KafkaWriter kafkaWriter;
     private PostgreRepository postgreRepository;
+    private ConverterService converter;
 
     public KafkaReader(KafkaProperties props, GeoService geoService, KafkaPropertiesAndMode propertiesAndMode,
-                       PostgreRepository postgreRepository, ApplicationProperties applicationProperties) {
+                       PostgreRepository postgreRepository, ApplicationProperties applicationProperties, ConverterService converter) {
         this.props = props;
         properties = new Properties();
         properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, props.getBootstrapServers());
@@ -61,6 +62,7 @@ public class KafkaReader {
         this.postgreRepository = postgreRepository;
         kafkaWriter = new KafkaWriter(props);
         this.applicationProperties = applicationProperties;
+        this.converter = converter;
     }
 
     public void processing() {
@@ -106,18 +108,7 @@ public class KafkaReader {
         // выход из цикла
         while (true) {
             if (data.size() >= windowSize) {
-                for (GeoDataFlag datum : data) {
-                    try {
-                        date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                                .parse(datum.getTimestamp());
-                        batchData = new BatchGeoData(date, datum.getId (), datum.getUserId(), (double) datum.getLongitude(), (double) datum.getLatitude(), datum.getFlag());
-                        values.add(batchData);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                }
-                values.sort(Comparator.comparing(BatchGeoData::getDate));
-                BatchInfoAndData batch = new BatchInfoAndData(constants, values);
+                BatchInfoAndData batch = converter.convert(data, constants);
                 service = switch (mode) {
                     case 1 -> new BatchDBSCANService();
                     case 2 -> new BatchGaussBasedService();

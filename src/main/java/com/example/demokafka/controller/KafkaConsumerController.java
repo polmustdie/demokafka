@@ -4,6 +4,7 @@ import com.example.demokafka.config.ApplicationProperties;
 import com.example.demokafka.kafka.KafkaReader;
 import com.example.demokafka.model.KafkaPropertiesAndMode;
 import com.example.demokafka.repository.PostgreRepository;
+import com.example.demokafka.service.ConverterService;
 import com.example.demokafka.service.GeoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,10 +24,12 @@ public class KafkaConsumerController {
     private PostgreRepository postgreRepository;
     @Autowired
     private ApplicationProperties applicationProperties;
+    @Autowired
+    private ConverterService converter;
 
     @PostMapping("/createSend")
     public void createAndSend(@RequestBody KafkaPropertiesAndMode properties) {
-        KafkaReader kafkaReader = new KafkaReader(properties.getProperties(), geoService, properties, postgreRepository, applicationProperties);
+        KafkaReader kafkaReader = new KafkaReader(properties.getProperties(), geoService, properties, postgreRepository, applicationProperties, converter);
         ExecutorService executorService = Executors.newCachedThreadPool();
         executorService.execute(kafkaReader::processing);
         executorService.execute(kafkaReader::readFromDb);

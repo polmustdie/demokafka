@@ -29,24 +29,24 @@ public class BatchController {
 
     @PostMapping("/HilOut")
     public List<BatchGeoData> analyzeHilOut(@RequestBody BatchGeoDataToController batch) throws Exception {
-        return batchHilOutService.analyze(converterService.convert(batch));
+        return batchHilOutService.analyze(converterService.convert(batch.getData(), batch.getConstants()));
     }
 
     @PostMapping("/DBSCAN")
     public List<BatchGeoData> analyzeDBSCAN(@RequestBody BatchGeoDataToController batch) throws Exception {
-        return batchDBSCANService.analyze(converterService.convert(batch));
+        return batchDBSCANService.analyze(converterService.convert(batch.getData(), batch.getConstants()));
 
     }
     @PostMapping("/LOF")
     public List<BatchGeoData> analyzeLOF(@RequestBody BatchGeoDataToController batch) throws Exception {
-        return batchLOFService.analyze(converterService.convert(batch));
+        return batchLOFService.analyze(converterService.convert(batch.getData(), batch.getConstants()));
     }
     @PostMapping("/IsolationForest")
     public List<BatchGeoData> analyzeIsolationForest(@RequestBody BatchGeoDataToController batch) throws Exception {
-        return batchIsolationForestService.analyze(converterService.convert(batch));
+        return batchIsolationForestService.analyze(converterService.convert(batch.getData(), batch.getConstants()));
     }
     @PostMapping("/Gauss")
     public List<BatchGeoData> analyzeGauss(@RequestBody BatchGeoDataToController batch) throws Exception {
-        return batchGaussBasedService.analyze(converterService.convert(batch));
+        return batchGaussBasedService.analyze(converterService.convert(batch.getData(), batch.getConstants()));
     }
 }

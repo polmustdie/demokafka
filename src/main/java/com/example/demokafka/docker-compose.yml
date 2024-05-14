@@ -1,0 +1,95 @@
+services:
+  clickhouse:
+    image: bitnami/clickhouse:latest
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    networks:
+      - some-network
+
+#  4a432eba66f6 :)   CREATE TABLE geo_points (id Int32, user_id Int32, timestamp String, latitude Float64, longitude Float64, new Bool, flag String) ENGINE = MergeTree() PRIMARY KEY(id);
+#  CREATE TABLE points_from_service (id SERIAL PRIMARY KEY, point_id INT, date date, latitude real, longitude real, outlier varchar(8), user_id int);
+
+  postgres:
+    hostname: postgres-host
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    networks:
+      - some-network
+
+#  click_host:
+#    container_name: click_host
+#    image: yandex/clickhouse-server
+#    ports:
+#      - "8123:8123"
+#      - "9000:9000"
+#    volumes:
+#      - ./dbfiles:/var/lib/clickhouse
+#    networks:
+#      - some-network
+#
+#  click_client:
+#    image: yandex/clickhouse-client
+#    entrypoint:
+#      - /bin/sleep
+#    command:
+#      - infinity
+#    networks:
+#      - some-network
+
+  zookeeper:
+    image: docker.io/bitnami/zookeeper:3.8
+    ports:
+      - "2181:2181"
+    volumes:
+      - "zookeeper_data:/bitnami"
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    networks:
+      - some-network
+
+
+  kafka:
+    image: docker.io/bitnami/kafka:3.4
+    container_name: kafka
+    ports:
+      - "9093:9093"
+      - "9092:9092"
+    volumes:
+      - "kafka_data:/bitnami"
+    environment:
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      - KAFKA_CFG_LISTENERS=CLIENT://:9092,EXTERNAL://:9093
+      - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka:9092,EXTERNAL://localhost:9093
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=CLIENT
+    depends_on:
+      - zookeeper
+    networks:
+      - some-network
+
+  demokafka:
+    build: docker/
+    depends_on:
+      - postgres
+      - kafka
+#      - click_host
+#      - click_client
+    ports:
+      - "8080:8080"
+    networks:
+      - some-network
+
+volumes:
+  zookeeper_data:
+    driver: local
+  kafka_data:
+    driver: local
+networks:
+  some-network:
+    driver: bridge

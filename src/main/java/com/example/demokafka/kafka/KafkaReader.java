@@ -99,6 +99,7 @@ public class KafkaReader {
     }
 
     public void analyze() {
+        log.info("I AM HERE");
         geoService.updateIsNewField(data, true);
         ArrayList<BatchGeoData> values = new ArrayList<>();
         BatchGeoData batchData;

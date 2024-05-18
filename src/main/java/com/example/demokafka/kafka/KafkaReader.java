@@ -90,7 +90,7 @@ public class KafkaReader {
     public void readFromDb(){
         TimerTask task = new TimerTask() {
             public void run() {
-                System.out.println("timer task is called");
+                log.debug("timer task is called");
                 data = geoService.getGeoDataClickFlag();
             }
         };
@@ -99,15 +99,14 @@ public class KafkaReader {
     }
 
     public void analyze() {
-        log.info("I AM HERE");
+        log.debug("analyze started");
         geoService.updateIsNewField(data, true);
-        ArrayList<BatchGeoData> values = new ArrayList<>();
-        BatchGeoData batchData;
-        Date date;
+
         List<BatchGeoData> nodes;
         BatchAlgoService service;
         // выход из цикла
         while (true) {
+            log.debug("entered while cycle");
             if (data.size() >= windowSize) {
                 BatchInfoAndData batch = converter.convert(data, constants);
                 service = switch (mode) {

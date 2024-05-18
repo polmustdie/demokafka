@@ -74,7 +74,7 @@ services:
       - some-network
 
   demokafka:
-    build: docker/
+    build: .
     depends_on:
       - postgres
       - kafka

@@ -22,30 +22,6 @@ public class WekaNode {
 
 	private List<Double> lsAttr = new ArrayList<>(); // feature list
 
-//	public String getLabel() {
-//		return label;
-//	}
-//
-//	public void setLabel(String label) {
-//		this.label = label;
-//	}
-//
-//	public String getPrelabel() {
-//		return prelabel;
-//	}
-//
-//	public void setPrelabel(String prelabel) {
-//		this.prelabel = prelabel;
-//	}
-//
-//	public List<Double> getLsAttr() {
-//		return lsAttr;
-//	}
-//
-//	public void setLsAttr(List<Double> lsAttr) {
-//		this.lsAttr = lsAttr;
-//	}
-
 	public WekaNode(Instance instance) throws ParseException {
 		int lenAttr = instance.numAttributes();
 		label = instance.stringValue(lenAttr - 1); // set true label
@@ -63,15 +39,4 @@ public class WekaNode {
 	public boolean isOutlier() {
 		return prelabel.equals("outlier");
 	}
-//	public Date getDate(){
-//		return this.date;
-//	}
-//
-//	public Integer getUserId() {
-//		return userId;
-//	}
-//
-//	public Integer getPointId() {
-//		return pointId;
-//	}
 }

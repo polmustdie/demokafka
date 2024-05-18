@@ -14,12 +14,4 @@ public class GAUNode extends WekaNode {
     public GAUNode(Instance instance) throws ParseException {
         super(instance);
     }
-
-//    public void setProbability(double p) {
-//        this.probability = p;
-//    }
-//
-//    public double getProbability() {
-//        return this.probability;
-//    }
 }

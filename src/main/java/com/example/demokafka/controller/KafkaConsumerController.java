@@ -30,10 +30,17 @@ public class KafkaConsumerController {
     @PostMapping("/createSend")
     public void createAndSend(@RequestBody KafkaPropertiesAndMode properties) {
         KafkaReader kafkaReader = new KafkaReader(properties.getProperties(), geoService, properties, postgreRepository, applicationProperties, converter);
-        ExecutorService executorService = Executors.newFixedThreadPool(10);
-        executorService.execute(kafkaReader::analyze);
+        Thread analyzeThread = new Thread(kafkaReader::analyze);
+        Thread readThread = new Thread(kafkaReader::readFromDb);
+        Thread processingThread = new Thread(kafkaReader::processing);
+        processingThread.start();
+        readThread.start();
+        analyzeThread.start();
 
-        executorService.execute(kafkaReader::processing);
-        executorService.execute(kafkaReader::readFromDb);
+//        processingThread.start();
+
+//        ExecutorService executorService = Executors.newFixedThreadPool(10);
+//        executorService.execute(kafkaReader::analyze);
+//        executorService.execute(kafkaReader::readFromDb);
     }
 }

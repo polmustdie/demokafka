@@ -1,9 +1,7 @@
 package com.example.demokafka.service;
 
 
-import com.example.demokafka.config.DataRowMapper;
 import com.example.demokafka.config.DataRowMapperFlag;
-import com.example.demokafka.model.GeoData;
 import com.example.demokafka.model.GeoDataFlag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -22,11 +20,11 @@ public class GeoService {
 
     }
 
-    public void saveClick(GeoData data){
-        String sql = "INSERT INTO points(id, date, longitude, latitude) values(?, ?, ?, ?)";
-        jdbcTemplateClick.update(sql,
-                data.getUserId(), data.getDate(), data.getLongitude(), data.getLatitude());
-    }
+//    public void saveClick(GeoData data){
+//        String sql = "INSERT INTO points(id, date, longitude, latitude) values(?, ?, ?, ?)";
+//        jdbcTemplateClick.update(sql,
+//                data.getUserId(), data.getDate(), data.getLongitude(), data.getLatitude());
+//    }
 
     public void saveClickGeo(GeoDataFlag data){
         String sql = "INSERT INTO geo_points(id, user_id, timestamp, latitude, longitude, new, flag) values(?, ?, ?, ?, ?,?,?)";
@@ -34,15 +32,15 @@ public class GeoService {
                 data.getId(), data.getUserId(), data.getTimestamp(), data.getLatitude(), data.getLongitude(), data.getIsNew(), data.getFlag());
     }
 
-    public List<GeoData> getGeoDataClick() {
-        String sql = "SELECT * FROM points";
-
-        List<GeoData> ans =  jdbcTemplateClick.query(sql, new DataRowMapper());
-        for (int i = 0; i < ans.size(); i++){
-            System.out.println(ans.get(i).toString());
-        }
-        return ans;
-    }
+//    public List<GeoData> getGeoDataClick() {
+//        String sql = "SELECT * FROM points";
+//
+//        List<GeoData> ans =  jdbcTemplateClick.query(sql, new DataRowMapper());
+//        for (int i = 0; i < ans.size(); i++){
+//            System.out.println(ans.get(i).toString());
+//        }
+//        return ans;
+//    }
     public List<GeoDataFlag> getGeoDataClickFlag() {
         String sql = "SELECT * FROM geo_points where new=true";
 
@@ -67,10 +65,10 @@ public class GeoService {
                 data.getIsNew());
     }
 
-    public void deleteById(int id){
-        var sql = "ALTER TABLE points DELETE WHERE id = ?";
-        jdbcTemplateClick.update(sql, id);
-
-    }
+//    public void deleteById(int id){
+//        var sql = "ALTER TABLE points DELETE WHERE id = ?";
+//        jdbcTemplateClick.update(sql, id);
+//
+//    }
 
 }

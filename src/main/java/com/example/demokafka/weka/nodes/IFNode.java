@@ -17,9 +17,4 @@ public class IFNode extends WekaNode {
     public IFNode(Instance instance) throws ParseException {
         super(instance);
     }
-
-//    public void setScore(double s) {
-//        this.score = s;
-//    }
-
 }

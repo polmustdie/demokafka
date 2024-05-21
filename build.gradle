@@ -54,6 +54,9 @@ dependencies {
 //	// https://mvnrepository.com/artifact/ru.yandex.clickhouse/clickhouse-jdbc
 	implementation group: 'ru.yandex.clickhouse', name: 'clickhouse-jdbc', version: '0.3.1'
 //	implementation group: 'com.github.housepower', name: 'clickhouse-native-jdbc-shaded', version: '2.5.4'
+	// https://mvnrepository.com/artifact/io.micrometer/micrometer-registry-prometheus
+	implementation group: 'io.micrometer', name: 'micrometer-registry-prometheus'
+
 
 
 	// databases
@@ -62,6 +65,14 @@ dependencies {
 	implementation 'org.jooq:jooq:3.17.8'
 	//spring jpa
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.0.5'
+	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-actuator
+	implementation 'org.springframework.boot:spring-boot-starter-actuator:3.2.0'
+// https://mvnrepository.com/artifact/io.micrometer/micrometer-registry-prometheus
+//	implementation 'io.micrometer:micrometer-registry-prometheus:1.0.0-rc.1'
+
+
+
+
 
 
 

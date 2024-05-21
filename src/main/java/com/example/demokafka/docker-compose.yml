@@ -10,7 +10,7 @@ services:
 #  CREATE TABLE points_from_service (id SERIAL PRIMARY KEY, point_id INT, date date, latitude real, longitude real, outlier varchar(8), user_id int);
 
   postgres:
-    hostname: postgres-host
+#    hostname: postgres-host
     image: postgres:latest
     ports:
       - "5432:5432"
@@ -72,6 +72,21 @@ services:
       - zookeeper
     networks:
       - some-network
+
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - 3000:3000
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
 
   demokafka:
     build: .

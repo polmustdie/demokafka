@@ -10,7 +10,6 @@ services:
 #  CREATE TABLE points_from_service (id SERIAL PRIMARY KEY, point_id INT, date date, latitude real, longitude real, outlier varchar(8), user_id int);
 
   postgres:
-#    hostname: postgres-host
     image: postgres:latest
     ports:
       - "5432:5432"
@@ -41,6 +40,44 @@ services:
 #    networks:
 #      - some-network
 
+
+
+#  zookeeper:
+#    image: wurstmeister/zookeeper
+#    ports:
+#      - "2181:2181"
+#    networks:
+#      - some-network
+#  kafka:
+#    container_name: kafka
+#    build: ./metrics
+#    links:
+#      - zookeeper
+#    ports:
+#      - "9093:9093"
+#      - "9092:9092"
+#    environment:
+#      #      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+#      #      - ALLOW_PLAINTEXT_LISTENER=yes
+#      #      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT
+#      #      - KAFKA_CFG_LISTENERS=CLIENT://:9092,EXTERNAL://:9093
+#      #      - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka:9092,EXTERNAL://localhost:9093
+#      #      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=CLIENT
+#
+#      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+#      ALLOW_PLAINTEXT_LISTENER: yes
+#      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT
+##      KAFKA_LISTENERS: CLIENT://:9092,EXTERNAL://:9093
+#      KAFKA_ADVERTISED_LISTENERS: CLIENT://kafka:9092,EXTERNAL://localhost:9093
+#      KAFKA_INTER_BROKER_LISTENER_NAME: CLIENT
+#      KAFKA_OPTS: -javaagent:/usr/app/jmx_prometheus_javaagent.jar=9092:/usr/app/prom-jmx-agent-config.yml
+#    volumes:
+#      - /var/run/docker.sock:/var/run/docker.sock
+#    depends_on:
+#      - zookeeper
+#    networks:
+#      - some-network
+
   zookeeper:
     image: docker.io/bitnami/zookeeper:3.8
     ports:
@@ -51,7 +88,6 @@ services:
       - ALLOW_ANONYMOUS_LOGIN=yes
     networks:
       - some-network
-
 
   kafka:
     image: docker.io/bitnami/kafka:3.4
@@ -78,7 +114,10 @@ services:
     ports:
       - 9090:9090
     volumes:
-      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./metrics/prometheus.yml:/etc/prometheus/prometheus.yml
+    links:
+      - kafka
+      - demokafka
 
   grafana:
     image: grafana/grafana
@@ -93,8 +132,7 @@ services:
     depends_on:
       - postgres
       - kafka
-#      - click_host
-#      - click_client
+      - clickhouse
     ports:
       - "8080:8080"
     networks:

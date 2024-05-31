@@ -31,7 +31,7 @@ $ docker-compose up -d
 ## Запросы
 - Запрос для потоковой обработки:
 
-![image](https://github.com/polmustdie/demokafka/assets/89970688/38d44c64-7d81-41c6-803c-4e1d816e9ddb)
+  ![image](https://github.com/polmustdie/demokafka/assets/89970688/38d44c64-7d81-41c6-803c-4e1d816e9ddb)
 
 
 - Запрос для пакетной обработки:

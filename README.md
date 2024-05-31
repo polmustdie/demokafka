@@ -30,9 +30,11 @@ $ docker-compose up -d
 
 ## Запросы
 - Запрос для потоковой обработки:
-(добавить)
+![image](https://github.com/polmustdie/demokafka/assets/89970688/38d44c64-7d81-41c6-803c-4e1d816e9ddb)
+
 - Запрос для пакетной обработки:
-  (добавить)
+  ![image](https://github.com/polmustdie/demokafka/assets/89970688/e8ae841c-373d-4064-b285-8f7050a0235a)
+
 
 где mode принимает значения от 0 до 4:
 - 0 – LOF

@@ -51,8 +51,4 @@ public class HILNode extends WekaNode {
             weight += getDistanceToOther(nodes);
         }
     }
-
-//    public double getWeight() {
-//        return weight;
-//    }
 }

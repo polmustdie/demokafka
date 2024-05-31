@@ -1,5 +1,6 @@
 package com.example.demokafka.weka.utils;
 
+import lombok.extern.slf4j.Slf4j;
 import weka.core.Instances;
 import weka.core.converters.CSVLoader;
 
@@ -12,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+@Slf4j
 public class CsvArffConverter
 
 {
@@ -37,7 +39,7 @@ public class CsvArffConverter
         }
 
         catch(IOException e){
-            System.out.println("Caught IOException");
+            log.error("Caught IOException");
         }
 
     }

@@ -15,8 +15,4 @@ public class SBSNode extends WekaNode {
     public SBSNode(Instance instance) throws ParseException {
         super(instance);
     }
-
-//    public void setClusterIndex(double clusterIndex) {
-//        this.clusterIndex = clusterIndex;
-//    }
 }

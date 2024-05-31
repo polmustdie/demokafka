@@ -31,6 +31,6 @@ public class JsonToCsv {
         csvMapper.configure(Feature.IGNORE_UNKNOWN, true);
         csvMapper.writerFor(JsonNode.class)
                 .with(csvSchema)
-                .writeValue(new File("src/main/resources/dataFromCsv.csv"), jsonNode);
+                .writeValue(new File("src/main/java/com/example/demokafka/files/dataFromCsv.csv"), jsonNode);
     }
 }

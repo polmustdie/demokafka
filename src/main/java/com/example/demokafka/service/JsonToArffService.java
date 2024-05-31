@@ -31,15 +31,15 @@ public class JsonToArffService {
         ObjectWriter writer = mapper.writer(new DefaultPrettyPrinter());
         try {
 
-            writer.writeValue(new File("src/main/resources/static/data.json"), batchGeoData);
-            JsonToCsv.createCsv("src/main/resources/static/data.json");
-            CsvArffConverter.convertCsvToArff("src/main/resources/dataFromCsv.csv", "src/main/resources/static/dataArff.arff");
+            writer.writeValue(new File("src/main/java/com/example/demokafka/files/data.json"), batchGeoData);
+            JsonToCsv.createCsv("src/main/java/com/example/demokafka/files/data.json");
+            CsvArffConverter.convertCsvToArff("src/main/java/com/example/demokafka/files/dataFromCsv.csv", "src/main/java/com/example/demokafka/files/dataArff.arff");
         }
         catch (IOException e){
             log.error(e.getMessage());
             e.printStackTrace();
         }
-        return "src/main/resources/static/dataArff.arff";
+        return "src/main/java/com/example/demokafka/files/dataArff.arff";
     }
 
 }

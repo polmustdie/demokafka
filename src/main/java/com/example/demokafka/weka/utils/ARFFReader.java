@@ -1,6 +1,7 @@
 package com.example.demokafka.weka.utils;
 
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
@@ -9,6 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Getter
+@Slf4j
 public class ARFFReader {
 
 	private Instances dataset;
@@ -24,7 +26,7 @@ public class ARFFReader {
 			dataset.setClassIndex(dataset.numAttributes()-1);
 
 		} catch (Exception e) {
-			System.out.println("Loading files error!");
+			log.error("Loading files error!");
 			e.printStackTrace();
 		}
 
@@ -38,7 +40,7 @@ public class ARFFReader {
 			setMu();
 			setStd();
 		}catch(Exception e){
-			System.out.println("Calculating parameters error!");
+			log.error("Calculating parameters error!");
 			e.printStackTrace();
 		}
 		
@@ -50,7 +52,7 @@ public class ARFFReader {
 			dataset = DataSource.read(path);
 
 		} catch (Exception e) {
-			System.out.println("Loading files error!");
+			log.error("Loading files error!");
 			e.printStackTrace();
 		}
 		
@@ -58,15 +60,11 @@ public class ARFFReader {
 			setMu();
 			setStd();
 		}catch(Exception e){
-			System.out.println("Calculating parameters error!");
+			log.error("Calculating parameters error!");
 			e.printStackTrace();
 		}
 		
 	}
-	
-//	public Instances getDataset(){
-//		return dataset;
-//	}
 	
 	public void setMu(){
 		int attrNum = this.dataset.numAttributes();
@@ -83,10 +81,6 @@ public class ARFFReader {
 		
 		this.mu = mus;
 	}
-	
-//	public double[] getMu(){
-//		return this.mu;
-//	}
 	
 	// std for each attribute
 	public void setStd(){
@@ -106,16 +100,13 @@ public class ARFFReader {
 		
 	}
 	
-//	public double[] getStd(){
-//		return this.std;
-//	}
-	
 	public void showDataset(){
-		System.out.println("----------   Dataset Basic Information   ----------");
-		System.out.println("(1) Relation Name : " + dataset.relationName());
-		System.out.println("(2) Instances     : " + dataset.numInstances());
-		System.out.println("(3) Attributes    : " + (dataset.numAttributes()-1));
-		System.out.println("(4) Class Labels  : " + labels);
+		log.info("----------   Dataset Basic Information   ----------");
+		log.info("----------   Dataset Basic Information   ----------");
+		log.info("(1) Relation Name : " + dataset.relationName());
+		log.info("(2) Instances     : " + dataset.numInstances());
+		log.info("(3) Attributes    : " + (dataset.numAttributes()-1));
+		log.info("(4) Class Labels  : " + labels);
 	}
 
 }
